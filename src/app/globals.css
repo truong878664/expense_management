@@ -149,3 +149,12 @@ a {
 .fixed-screen {
   @apply fixed bottom-0 left-0 right-0 top-0;
 }
+
+.absolute-screen {
+  @apply absolute bottom-0 left-0 right-0 top-0;
+}
+
+[contenteditable]:empty:after {
+  content: attr(placeholder);
+  color: #a3a3a3;
+}

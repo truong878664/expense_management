@@ -1,8 +1,11 @@
 "use client";
+import { LayoutAddExpenseContext } from "@/app/context/LayoutAddExpenseContext";
 import PageAddExpense from "@/components/app/PageAddExpense";
+import { useContext } from "react";
 
 function AddPage() {
-  return <PageAddExpense />;
+  const { onDismiss } = useContext(LayoutAddExpenseContext);
+  return <PageAddExpense onClick={onDismiss} />;
 }
 
 export default AddPage;

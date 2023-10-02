@@ -1,7 +1,16 @@
+"use client";
+
 import PageAddExpense from "@/components/app/PageAddExpense";
+import LayoutAddExpense from "../@modal/(.)add-expense/layout";
+import { useRouter } from "next/navigation";
 
 function AddExpense() {
-  return <PageAddExpense />;
+  const router = useRouter();
+  return (
+    <LayoutAddExpense>
+      <PageAddExpense onClick={router.back} />;
+    </LayoutAddExpense>
+  );
 }
 
 export default AddExpense;

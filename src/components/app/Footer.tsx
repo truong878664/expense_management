@@ -29,7 +29,7 @@ function Footer() {
   };
 
   return (
-    <footer>
+    <footer className="z-10">
       <div className="w-full pb-4">
         <ul className="grid w-full grid-cols-5 whitespace-nowrap border-t">
           <ItemFooter
@@ -44,7 +44,7 @@ function Footer() {
             icon={faWallet}
             title="Sổ giao dịch"
           />
-          <li className="relative grid place-content-center">
+          <li className="relative z-0 grid place-content-center">
             {pathname === "/add-expense" && (
               <button
                 onClick={onDismiss}
@@ -54,9 +54,9 @@ function Footer() {
             <Link href={"/add-expense"}>
               <button
                 className={`${
-                  pathname === "/add-expense"
+                  pathname.indexOf("/add-expense") !== -1
                     ? "rotate-[135deg] bg-red-400"
-                    : "bg-[#5CB559]"
+                    : "bg-c-green"
                 } grid aspect-square w-14 -translate-y-1/4 place-content-center rounded-full text-2xl text-white shadow-md transition-all duration-700 `}
               >
                 <FontAwesomeIcon icon={faPlus} className="blur-0" />

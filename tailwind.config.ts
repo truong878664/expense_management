@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss'
 import plugin from "tailwindcss/plugin";
+import zIndex from './tailwind/zIndex';
 
 
 const config: Config = {
@@ -10,11 +11,26 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        'c-green': '#5CB559'
+      },
+      zIndex: zIndex() as any,
       backgroundImage: {
 
       },
-      animation: {},
-      keyframes: {}
+      animation: {
+        'show-left': 'show-left 250ms linear 1',
+      },
+      keyframes: {
+        'show-left': {
+          "0%": {
+            "transform": "translateX(100%)"
+          },
+          "100%": {
+            "transform": "translateX(0)"
+          }
+        }
+      }
     },
   },
 
