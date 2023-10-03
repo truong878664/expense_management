@@ -15,15 +15,13 @@ import { useState } from "react";
 function PageAddExpense({ onClick }: { onClick: () => void }) {
   const [value, setValue] = useState<string | number>(0);
   const onchange = (e: any) => {
-    const value = Money.formatNumber(e.target.value);
-    setValue(value);
+    const valueInput = Money.formatNumber(e.target.value);
+    setValue(valueInput);
   };
-  console.log(123);
-
   const onSubmit = () => {
-    console.log(value);
+    const moneyExpense = Number(value.toString().replaceAll(",", ""));
+    console.log(moneyExpense);
   };
-
   return (
     <>
       <div className="mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
@@ -42,6 +40,7 @@ function PageAddExpense({ onClick }: { onClick: () => void }) {
           </div>
           <div className="flex flex-1 flex-col border-b">
             <span className="text-xs">Số tiền</span>
+
             <input
               type="text"
               value={value}
