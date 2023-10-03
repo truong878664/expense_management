@@ -1,36 +1,33 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
-import zIndex from './tailwind/zIndex';
-
+import zIndex from "./tailwind/zIndex";
 
 const config: Config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
-        'c-green': '#5CB559'
+        "c-green": "#5CB559",
       },
       zIndex: zIndex() as any,
-      backgroundImage: {
-
-      },
+      backgroundImage: {},
       animation: {
-        'show-left': 'show-left 250ms linear 1',
+        "show-left": "show-left 200ms linear 1",
       },
       keyframes: {
-        'show-left': {
+        "show-left": {
           "0%": {
-            "transform": "translateX(100%)"
+            transform: "translateX(100%)",
           },
           "100%": {
-            "transform": "translateX(0)"
-          }
-        }
-      }
+            transform: "translateX(0)",
+          },
+        },
+      },
     },
   },
 
@@ -43,9 +40,9 @@ const config: Config = {
         ".scrollbar-none": {
           "-ms-overflow-style": "none",
           "scrollbar-width": "none",
-        }
-      })
+        },
+      });
     }),
   ],
-}
-export default config
+};
+export default config;

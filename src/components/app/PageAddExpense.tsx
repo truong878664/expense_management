@@ -1,31 +1,53 @@
 "use client";
 
+import {
+  InitStateExpense,
+  extend,
+  reset,
+} from "@/app/@modal/(.)add-expense/createExpenseSlice";
 import Money from "@/function/formatMoney";
+import { findExpenseGroup } from "@/function/groupExpenseList";
 import {
   faAlignLeft,
   faAngleRight,
   faCalendarDay,
   faCaretDown,
   faMugHot,
+  faStroopwafel,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-function PageAddExpense({ onClick }: { onClick: () => void }) {
-  const [value, setValue] = useState<string | number>(0);
+function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
+  const dispatch = useDispatch();
+  const expense = useSelector(
+    (state: { createExpense: InitStateExpense }) => state.createExpense,
+  );
+  const [value, setValue] = useState<string | number>(
+    Money.formatNumber(expense.money),
+  );
   const onchange = (e: any) => {
     const valueInput = Money.formatNumber(e.target.value);
     setValue(valueInput);
   };
   const onSubmit = () => {
-    const moneyExpense = Number(value.toString().replaceAll(",", ""));
-    console.log(moneyExpense);
+    setValue(0);
+    dispatch(reset());
+    handleDismiss();
   };
+  const dispatchMoney = () => {
+    const moneyExpense = Number(value.toString().replaceAll(",", ""));
+    dispatch(extend({ money: moneyExpense }));
+  };
+
+  const groupSelector = findExpenseGroup(expense.group);
+
   return (
     <>
-      <div className="mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
-        <button onClick={onClick}>Hủy</button>
+      <div className="sticky top-0 mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
+        <button onClick={handleDismiss}>Hủy</button>
         <span>Thêm giao dịch</span>
         <button className="disabled:opacity-50" onClick={onSubmit}>
           Lưu
@@ -50,14 +72,25 @@ function PageAddExpense({ onClick }: { onClick: () => void }) {
           </div>
         </div>
         <div className="flex gap-4">
-          <div className="grid aspect-square w-10 place-content-center rounded-full bg-rose-300/20 text-rose-400">
-            <FontAwesomeIcon icon={faMugHot} />
+          <div
+            className="grid aspect-square w-10 place-content-center rounded-full bg-rose-300/20 text-2xl text-rose-400"
+            style={{
+              backgroundColor: groupSelector?.color + "3F",
+              color: groupSelector?.color,
+            }}
+          >
+            <FontAwesomeIcon
+              icon={groupSelector?.iconFa?.icon || faStroopwafel}
+            />
           </div>
           <Link
+            onClick={dispatchMoney}
             href={"/add-expense/group"}
             className="flex flex-1 items-center justify-between border-b pr-2"
           >
-            <span className="text-2xl text-gray-600">Chọn nhóm</span>
+            <span className="text-2xl text-gray-600">
+              {groupSelector?.title || "Chọn nhóm"}
+            </span>
             <FontAwesomeIcon className="text-gray-400" icon={faAngleRight} />
           </Link>
         </div>
@@ -66,10 +99,15 @@ function PageAddExpense({ onClick }: { onClick: () => void }) {
             <FontAwesomeIcon className="text-gray-400" icon={faAlignLeft} />
           </div>
           <Link
+            onClick={dispatchMoney}
             href={"/add-expense/note"}
             className="flex flex-1 items-center justify-between border-b pr-2"
           >
-            <span className="">Ghi chú</span>
+            <span className="">
+              {expense.note && expense.note?.length > 20
+                ? expense.note?.slice(0, 20) + "..."
+                : expense.note || "Ghi chú"}
+            </span>
             <FontAwesomeIcon className="text-gray-400" icon={faAngleRight} />
           </Link>
         </div>

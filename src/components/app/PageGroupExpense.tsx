@@ -12,7 +12,7 @@ function PageGroupExpense() {
   const route = useRouter();
 
   return (
-    <div className="animate-show-left flex h-full w-full flex-col border-l shadow-sm">
+    <div className="flex h-full w-full animate-show-left flex-col border-l shadow-sm">
       <div className="mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
         <button onClick={route.back} className="px-3">
           <FontAwesomeIcon icon={faAngleLeft} />

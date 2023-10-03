@@ -1,8 +1,7 @@
-"use client";
-
 import Header from "@/components/Home/Header";
 import ItemExpense from "@/components/expense/ItemExpense";
 import Money from "@/function/formatMoney";
+
 export default function Home() {
   const array: any = [];
   for (let i = 0; i < 40; i++) {

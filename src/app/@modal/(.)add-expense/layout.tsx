@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { RefObject, useEffect, useRef } from "react";
-import { LayoutAddExpenseContext } from "../../context/LayoutAddExpenseContext";
+import { LayoutAddExpenseContext } from "@/context/LayoutAddExpenseContext";
 
 function LayoutAddExpense({ children }: { children: React.ReactNode }) {
   const addExpenseWrapperRef: RefObject<HTMLDivElement> = useRef(null);
@@ -27,7 +27,7 @@ function LayoutAddExpense({ children }: { children: React.ReactNode }) {
         data-active=""
         id="add-expense-wrapper"
         ref={addExpenseWrapperRef}
-        className="absolute bottom-0 left-0 top-14 w-full translate-y-full rounded-t-3xl border-t bg-slate-100 py-2 transition-all duration-500 data-[active='show']:translate-y-0 "
+        className="absolute bottom-0 left-0 top-14 w-full translate-y-full overflow-auto rounded-t-3xl border-t bg-slate-100 py-2 transition-all duration-500 scrollbar-none data-[active='show']:translate-y-0 "
       >
         <LayoutAddExpenseContext.Provider value={{ onDismiss }}>
           {children}
