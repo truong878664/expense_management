@@ -1,2 +1,2 @@
-const uid = (name: string) => name + "_" + Math.random().toString(16).slice(2)
+const uid = (name: string) => name + "_" + Date.now().toString(16)
 export default uid

@@ -7,17 +7,17 @@ import {
 } from "@/app/@modal/(.)add-expense/createExpenseSlice";
 import Money from "@/function/formatMoney";
 import { findExpenseGroup } from "@/function/groupExpenseList";
+import uid from "@/function/uid";
 import {
   faAlignLeft,
   faAngleRight,
   faCalendarDay,
   faCaretDown,
-  faMugHot,
   faStroopwafel,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
@@ -33,17 +33,20 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
     setValue(valueInput);
   };
   const onSubmit = () => {
+    console.log(expense);
     setValue(0);
     dispatch(reset());
     handleDismiss();
   };
+
   const dispatchMoney = () => {
     const moneyExpense = Number(value.toString().replaceAll(",", ""));
     dispatch(extend({ money: moneyExpense }));
   };
-
   const groupSelector = findExpenseGroup(expense.group);
-
+  useEffect(() => {
+    dispatch(extend({ id: uid("ex") }));
+  }, []);
   return (
     <>
       <div className="sticky top-0 mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
@@ -104,9 +107,9 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
             className="flex flex-1 items-center justify-between border-b pr-2"
           >
             <span className="">
-              {expense.note && expense.note?.length > 20
-                ? expense.note?.slice(0, 20) + "..."
-                : expense.note || "Ghi chú"}
+              {expense.describe && expense.describe?.length > 20
+                ? expense.describe?.slice(0, 20) + "..."
+                : expense.describe || "Ghi chú"}
             </span>
             <FontAwesomeIcon className="text-gray-400" icon={faAngleRight} />
           </Link>
@@ -116,7 +119,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
             <FontAwesomeIcon className="text-gray-400" icon={faCalendarDay} />
           </div>
           <button className="flex flex-1 items-center justify-between border-b pr-2">
-            <span className="">Ngày</span>
+            <span className="">{expense.date}</span>
             <FontAwesomeIcon className="text-gray-400" icon={faAngleRight} />
           </button>
         </div>

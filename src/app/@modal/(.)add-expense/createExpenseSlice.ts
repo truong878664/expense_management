@@ -1,17 +1,20 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import CDate from "@/function/CDate";
 
 export interface InitStateExpense {
+    id: number | string | null;
     money: number;
     group: string | number;
-    note?: string;
+    describe?: string;
     date: string;
 }
 
 const initialState: InitStateExpense = {
+    id: null,
     money: 0,
     group: "",
-    note: "",
-    date: "",
+    describe: "",
+    date: new CDate().today,
 };
 
 const actions = {
@@ -22,9 +25,9 @@ const actions = {
     },
     reset(state: any) {
         for (const key in initialState) {
-            state[key] = initialState[key as keyof InitStateExpense]
+            state[key] = initialState[key as keyof InitStateExpense];
         }
-    }
+    },
 };
 const createExpenseSlice = createSlice({
     name: "createExpense",

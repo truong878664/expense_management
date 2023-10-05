@@ -1,4 +1,5 @@
 "use client";
+import CDate from "@/function/CDate";
 import {
   InitialState,
   decrement,
@@ -6,12 +7,15 @@ import {
   incrementByAmount,
 } from "./counterSlice";
 import { useDispatch, useSelector } from "react-redux";
+import DataExpense from "@/function/DataExpense";
 
 function PageTest() {
   const dispatch = useDispatch();
   const count = useSelector(
     (state: { counter: InitialState }) => state.counter.value,
   );
+
+  const cDate = new CDate();
   return (
     <div className="">
       <div className="flex gap-10">

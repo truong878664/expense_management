@@ -14,14 +14,11 @@ function NotePage() {
   const expense = useSelector(
     (state: { createExpense: InitStateExpense }) => state.createExpense,
   );
-  // console.log(expense.note);
-  // const [note, setNote] = useState(expense.note);
   const onSubmit = () => {
-    dispatch(extend({ note: noteRef.current?.textContent || "" }));
+    dispatch(extend({ describe: noteRef.current?.textContent || "" }));
     route.back();
   };
   const onValidateSubmit = (e: any) => {
-    // setNote(e.target.textContent);
     if (buttonSubmitRef.current)
       buttonSubmitRef.current.disabled = !e.target.textContent;
   };
@@ -49,7 +46,7 @@ function NotePage() {
           onInput={onValidateSubmit}
           suppressContentEditableWarning
         >
-          {expense.note}
+          {expense.describe}
         </div>
       </div>
     </div>
