@@ -34,9 +34,9 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   };
   const onSubmit = () => {
     console.log(expense);
-    setValue(0);
-    dispatch(reset());
-    handleDismiss();
+    // setValue(0);
+    // dispatch(reset());
+    // handleDismiss();
   };
 
   const dispatchMoney = () => {

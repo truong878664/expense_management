@@ -3,16 +3,12 @@ import type { Metadata } from "next";
 import { Inconsolata } from "next/font/google";
 import Footer from "../components/app/Footer";
 import ReduxProvider from "@/Providers";
-import favicon from "./favicon.png";
 
 const inconsolata = Inconsolata({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Expense management",
   description: "App to manage your expenses",
-  icons: {
-    icon: favicon.src,
-  },
 };
 
 export default function RootLayout({

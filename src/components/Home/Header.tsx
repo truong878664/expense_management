@@ -8,43 +8,19 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import LiDate from "../header/LiDate";
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, memo, useEffect, useLayoutEffect, useRef } from "react";
 import dateList from "@/function/dateList";
-import useQueryParams from "@/hooks/useQueryParams";
 
-import { useRouter } from "next/navigation";
-import { Object } from "@/app/global";
-import convertParams from "@/function/convertParam";
-
-function Header() {
+function Header({ activeDate }: { activeDate: string }) {
   const dateWrapperRef: RefObject<HTMLUListElement> = useRef(null);
-  const behaviorRef = useRef<"auto" | "smooth">("auto");
-
-  const dateNow = new Date().toLocaleDateString();
-  const router = useRouter();
-
-  const params = useQueryParams();
-  const paramList = params.getAll();
-  const dateParam: string = params.get("date") || dateNow;
-
-  useEffect(() => {
+  const behaviorRef = useRef<"auto" | "smooth">("smooth");
+  useLayoutEffect(() => {
     dateWrapperRef.current?.querySelector(".active")?.scrollIntoView({
       behavior: behaviorRef.current,
       block: "center",
       inline: "center",
     });
-  }, [dateParam]);
-
-  const onClick = (newQueryAdd: Object<string | number>) => {
-    behaviorRef.current = "smooth";
-    const param = convertParams({
-      pathname: "/",
-      query: paramList,
-      newQuery: newQueryAdd,
-    });
-    router.push(param);
-  };
-
+  }, [activeDate]);
   return (
     <header>
       <div className="relative pt-2">
@@ -80,9 +56,8 @@ function Header() {
             {dateList.map((date, index) => {
               return (
                 <LiDate
-                  onClick={() => onClick({ date: date.value })}
                   key={index}
-                  active={dateParam === date.value}
+                  active={activeDate === date.value}
                   value={date.value}
                   title={date.title}
                 />
@@ -95,4 +70,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default memo(Header);

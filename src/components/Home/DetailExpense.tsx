@@ -1,19 +1,19 @@
 "use client";
 import ItemExpense from "@/components/expense/ItemExpense";
 import Money from "@/function/formatMoney";
-import useQueryParams from "@/hooks/useQueryParams";
+import { memo } from "react";
 import { useSelector } from "react-redux";
-function DetailExpense() {
-  const params = useQueryParams();
-
+function DetailExpense({ activeDate }: { activeDate: string }) {
   const array: any = [];
   for (let i = 0; i < 40; i++) {
     array.push("an uong " + i);
   }
+  console.log("detail page", activeDate);
+
   const expense = useSelector(
     (state: { createSlice: any }) => state.createSlice,
   );
-  console.log(params.get("date"));
+  // console.log("homepage", expense);
   return (
     <>
       <div className="bg-gray-100 p-2">
@@ -65,4 +65,4 @@ function DetailExpense() {
   );
 }
 
-export default DetailExpense;
+export default memo(DetailExpense);
