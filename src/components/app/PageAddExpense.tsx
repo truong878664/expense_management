@@ -5,6 +5,8 @@ import {
   extend,
   reset,
 } from "@/app/@modal/(.)add-expense/createExpenseSlice";
+import { add } from "@/app/expenseSlice";
+import { InitialState } from "@/app/test/counterSlice";
 import Money from "@/function/formatMoney";
 import { findExpenseGroup } from "@/function/groupExpenseList";
 import uid from "@/function/uid";
@@ -25,6 +27,10 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const expense = useSelector(
     (state: { createExpense: InitStateExpense }) => state.createExpense,
   );
+  const dataExpense = useSelector(
+    (state: { createSlice: InitialState }) => state.createSlice,
+  );
+
   const [value, setValue] = useState<string | number>(
     Money.formatNumber(expense.money),
   );
@@ -33,7 +39,9 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
     setValue(valueInput);
   };
   const onSubmit = () => {
-    console.log(expense);
+    dispatch(add({ ...expense, type: "expense" }));
+    // console.log(dataExpense);
+
     // setValue(0);
     // dispatch(reset());
     // handleDismiss();

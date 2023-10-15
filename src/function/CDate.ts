@@ -10,7 +10,7 @@ export default class CustomDate {
         return this.#date.getFullYear();
     }
     get month() {
-        return this.#date.getMonth();
+        return this.#date.getMonth() + 1;
     }
     get hours() {
         return this.#date.getHours();
@@ -18,12 +18,16 @@ export default class CustomDate {
     get minute() {
         return this.#date.getMinutes();
     }
+    get day() {
+        return this.#date.getDate();
+    }
     get full() {
         return {
             year: this.year,
             month: this.month,
             hours: this.hours,
             minute: this.minute,
+            day: this.day
         };
     }
 }
