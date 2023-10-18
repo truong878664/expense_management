@@ -6,15 +6,20 @@ export interface InitStateExpense {
     money: number;
     group: string | number;
     describe?: string;
-    date: string;
+    date: number;
+    month: number;
+    year: number;
+    day: string;
 }
 
 const initialState: InitStateExpense = {
     id: null,
     money: 0,
     group: "",
-    describe: "",
-    date: new CDate().today,
+    date: new CDate().date,
+    month: new CDate().month,
+    year: new CDate().year,
+    day: new CDate().day
 };
 
 const actions = {

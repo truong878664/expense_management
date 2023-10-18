@@ -2,30 +2,46 @@
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import { RefObject, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { InitStateExpense, extend } from "../createExpenseSlice";
+import { gsap } from "gsap";
 
 function NotePage() {
   const noteRef: RefObject<HTMLDivElement> = useRef(null);
+  const noteWrapperRef: RefObject<HTMLDivElement> = useRef(null);
   const buttonSubmitRef: RefObject<HTMLButtonElement> = useRef(null);
   const route = useRouter();
   const dispatch = useDispatch();
   const expense = useSelector(
     (state: { createExpense: InitStateExpense }) => state.createExpense,
   );
+  const onBack = () => {
+    gsap.fromTo(
+      noteWrapperRef.current,
+      { translateX: "0" },
+      { translateX: "100%", duration: 0.3, onComplete: route.back },
+    );
+  };
   const onSubmit = () => {
     dispatch(extend({ describe: noteRef.current?.textContent || "" }));
-    route.back();
+    onBack();
   };
   const onValidateSubmit = (e: any) => {
     if (buttonSubmitRef.current)
       buttonSubmitRef.current.disabled = !e.target.textContent;
   };
+  useEffect(() => {
+    gsap.fromTo(
+      noteWrapperRef.current,
+      { translateX: "100%", opacity: 0 },
+      { translateX: "0", duration: 0.3, opacity: 1 },
+    );
+  }, []);
   return (
-    <div className="h-full w-full animate-show-left border-l">
+    <div ref={noteWrapperRef} className="h-full w-full">
       <div className="mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
-        <button onClick={route.back} className="px-3">
+        <button onClick={onBack} className="px-3">
           <FontAwesomeIcon icon={faAngleLeft} />
         </button>
         <span>Ghi chú</span>

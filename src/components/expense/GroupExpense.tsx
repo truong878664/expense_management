@@ -9,15 +9,16 @@ import { useRouter } from "next/navigation";
 function GroupExpense({
   title,
   data,
+  onBack,
 }: {
   title: string;
   data: string[] | number[];
+  onBack: () => void;
 }) {
-  const route = useRouter();
   const dispatch = useDispatch();
   const onSelectGroup = (id: string | number) => {
     dispatch(extend({ group: id }));
-    route.back();
+    onBack();
   };
   return (
     <div className="">

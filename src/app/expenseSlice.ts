@@ -1,15 +1,16 @@
 import DataExpense from "@/function/DataExpense";
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 interface ExpenseList {
+    id: string | number | null;
     group: number | string;
-    describe: string;
+    describe?: string;
     money: number;
     type: "income" | "expense";
+    day: string;
 }
 interface expenseDay {
-    [day: number]: {
-        initBalanceDay: number;
-        finalBalanceDay: number;
+    [date: number]: {
+        total: number;
         expenseList?: ExpenseList[];
     };
 }
@@ -19,7 +20,7 @@ interface expenseMonth {
 interface expenseYear {
     [year: number]: expenseMonth;
 }
-interface InitialState {
+export interface ExpenseData {
     initBalance: number;
     finalBalance: number;
     currency: "vnd" | "usd";
@@ -28,12 +29,28 @@ interface InitialState {
     data: expenseYear;
 }
 
+export interface ExpensePayload extends ExpenseList {
+    date: number;
+    month: number;
+    year: number;
+}
+
 const dataExpense = new DataExpense();
 
-const initialState: InitialState[] = dataExpense.get;
+const initialState: ExpenseData = dataExpense.get;
 const actions = {
-    add(state: InitialState[]) {
-        console.log(state);
+    add(state: ExpenseData, action: PayloadAction<ExpensePayload>) {
+        const { date, month, year, ...expenseItem } = action.payload;
+        const yearData = (state.data[year] ||= {});
+        const monthData = (yearData[month] ||= {});
+        const dayData = (monthData[date] ||= {
+            total: 0,
+            expenseList: [],
+        });
+        dayData.expenseList = [...<[]>dayData.expenseList, expenseItem]
+        // dataExpense.save(JSON.parse(JSON.stringify(state)))
+        console.log(JSON.parse(JSON.stringify(state)));
+
     },
 };
 const expenseSlice = createSlice({

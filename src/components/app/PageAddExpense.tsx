@@ -5,6 +5,8 @@ import {
   extend,
   reset,
 } from "@/app/@modal/(.)add-expense/createExpenseSlice";
+import { ExpensePayload, add } from "@/app/expenseSlice";
+import CDate from "@/function/CDate";
 import Money from "@/function/formatMoney";
 import { findExpenseGroup } from "@/function/groupExpenseList";
 import uid from "@/function/uid";
@@ -17,8 +19,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import DateSelect from "../expense/DateSelect";
 
 function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const dispatch = useDispatch();
@@ -28,12 +31,25 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const [value, setValue] = useState<string | number>(
     Money.formatNumber(expense.money),
   );
+  const [dateSelect, setDateSelect] = useState<ReactElement | null>(null);
   const onchange = (e: any) => {
     const valueInput = Money.formatNumber(e.target.value);
     setValue(valueInput);
   };
+
+  const a = useSelector((state: any) => state.createSlice);
+  console.log("data", a);
+  console.log("expense", expense);
+
   const onSubmit = () => {
-    console.log(expense);
+    const payloadExpense: ExpensePayload = {
+      ...expense,
+      type: "income",
+    };
+    dispatch(add(payloadExpense));
+    // console.log(a);
+    console.log("submit");
+
     // setValue(0);
     // dispatch(reset());
     // handleDismiss();
@@ -47,6 +63,12 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   useEffect(() => {
     dispatch(extend({ id: uid("ex") }));
   }, []);
+
+  const onClickSelectDate = (e: any) => {
+    setDateSelect(<DateSelect handleRemove={setDateSelect} />);
+    console.log(dateSelect);
+  };
+
   return (
     <>
       <div className="sticky top-0 mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
@@ -118,8 +140,13 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
           <div className="grid aspect-square w-10 place-content-center text-gray-500">
             <FontAwesomeIcon className="text-gray-400" icon={faCalendarDay} />
           </div>
-          <button className="flex flex-1 items-center justify-between border-b pr-2">
-            <span className="">{expense.date}</span>
+          <button
+            className="flex flex-1 items-center justify-between border-b pr-2"
+            onClick={onClickSelectDate}
+          >
+            <span className="">
+              {expense.day}, {expense.date}/{expense.month}/{expense.year}
+            </span>
             <FontAwesomeIcon className="text-gray-400" icon={faAngleRight} />
           </button>
         </div>
@@ -130,6 +157,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
           <span className="text-green-500">Thêm chi tiết</span>
         </button>
       </div>
+      {dateSelect}
     </>
   );
 }

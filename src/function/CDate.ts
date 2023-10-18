@@ -1,4 +1,4 @@
-export default class CustomDate {
+export default class CDate {
     #date;
     constructor() {
         this.#date = new Date();
@@ -10,7 +10,14 @@ export default class CustomDate {
         return this.#date.getFullYear();
     }
     get month() {
-        return this.#date.getMonth();
+        return this.#date.getMonth() + 1;
+    }
+    get date() {
+        return this.#date.getDate();
+    }
+    get day() {
+        const days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+        return days[this.#date.getDay()]
     }
     get hours() {
         return this.#date.getHours();
@@ -18,12 +25,22 @@ export default class CustomDate {
     get minute() {
         return this.#date.getMinutes();
     }
+    get second() {
+        return this.#date.getSeconds()
+    }
+    calculateDay(date: number) {
+        this.#date.setDate(this.#date.getDate() + date);
+        return this.full
+    }
+
     get full() {
         return {
             year: this.year,
             month: this.month,
+            date: this.date,
             hours: this.hours,
             minute: this.minute,
+            day: this.day
         };
     }
 }
