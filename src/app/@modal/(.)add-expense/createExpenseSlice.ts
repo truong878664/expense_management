@@ -16,6 +16,7 @@ const initialState: InitStateExpense = {
     id: null,
     money: 0,
     group: "",
+    describe: "",
     date: new CDate().date,
     month: new CDate().month,
     year: new CDate().year,

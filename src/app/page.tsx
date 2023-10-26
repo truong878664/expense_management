@@ -7,6 +7,7 @@ export default function Home() {
   const params = useQueryParams();
   const dateNow = new Date().toLocaleDateString();
   const activeDate = params.get("date") || dateNow;
+
   return (
     <div className="flex h-full flex-col">
       <Header activeDate={activeDate} />

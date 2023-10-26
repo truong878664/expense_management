@@ -1,56 +1,65 @@
 import DataExpense from "@/function/DataExpense";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-interface ExpenseList {
+
+type ExpenseData = {
+    [year: number]: ExpenseYear;
+};
+type ExpenseYear = {
+    [month: number]: ExpenseMonth;
+};
+type ExpenseMonth = {
+    [date: number]: ExpenseDay;
+};
+export type ExpenseDay = {
+    total: number;
+    expenseList: ExpenseList[];
+};
+export type ExpenseList = {
     id: string | number | null;
     group: number | string;
     describe?: string;
     money: number;
     type: "income" | "expense";
     day: string;
-}
-interface expenseDay {
-    [date: number]: {
-        total: number;
-        expenseList?: ExpenseList[];
-    };
-}
-interface expenseMonth {
-    [month: number]: expenseDay;
-}
-interface expenseYear {
-    [year: number]: expenseMonth;
-}
-export interface ExpenseData {
+};
+export type Expense = {
     initBalance: number;
     finalBalance: number;
     currency: "vnd" | "usd";
     wallet: string;
     idWallet: string | number;
-    data: expenseYear;
-}
-
-export interface ExpensePayload extends ExpenseList {
+    finalBalanceEachYear: { [year: number]: number };
+    data: ExpenseData;
+};
+export type ExpensePayload = ExpenseList & {
     date: number;
     month: number;
     year: number;
-}
-
+};
 const dataExpense = new DataExpense();
-
-const initialState: ExpenseData = dataExpense.get;
+const initialState: Expense = dataExpense.get;
 const actions = {
-    add(state: ExpenseData, action: PayloadAction<ExpensePayload>) {
+    add(state: Expense, action: PayloadAction<ExpensePayload>) {
         const { date, month, year, ...expenseItem } = action.payload;
-        const yearData = (state.data[year] ||= {});
+        const data = (state.data ||= {});
+        const yearData = (data[year] ||= {});
         const monthData = (yearData[month] ||= {});
-        const dayData = (monthData[date] ||= {
+        const dayData: ExpenseDay = (monthData[date] ||= {
             total: 0,
             expenseList: [],
         });
-        dayData.expenseList = [...<[]>dayData.expenseList, expenseItem]
-        // dataExpense.save(JSON.parse(JSON.stringify(state)))
-        console.log(JSON.parse(JSON.stringify(state)));
 
+        dayData.expenseList = [
+            ...JSON.parse(JSON.stringify(dayData.expenseList)),
+            expenseItem,
+        ];
+        const totalMoney = Array.from(dayData.expenseList).reduce(
+            (sum: number, expense: ExpenseList) => expense.money + sum,
+            0,
+        );
+
+        dayData.total = totalMoney
+        dataExpense.save((JSON.stringify(state)))
     },
 };
 const expenseSlice = createSlice({

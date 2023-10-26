@@ -7,6 +7,7 @@ import {
 } from "@/app/@modal/(.)add-expense/createExpenseSlice";
 import { ExpensePayload, add } from "@/app/expenseSlice";
 import CDate from "@/function/CDate";
+import { InitialState } from "@/app/test/counterSlice";
 import Money from "@/function/formatMoney";
 import { findExpenseGroup } from "@/function/groupExpenseList";
 import uid from "@/function/uid";
@@ -36,23 +37,18 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
     const valueInput = Money.formatNumber(e.target.value);
     setValue(valueInput);
   };
-
-  const a = useSelector((state: any) => state.createSlice);
-  console.log("data", a);
-  console.log("expense", expense);
-
+  const onReset = () => {
+    setValue(0);
+    dispatch(reset());
+  };
   const onSubmit = () => {
     const payloadExpense: ExpensePayload = {
       ...expense,
       type: "income",
     };
     dispatch(add(payloadExpense));
-    // console.log(a);
-    console.log("submit");
-
-    // setValue(0);
-    // dispatch(reset());
-    // handleDismiss();
+    onReset();
+    handleDismiss();
   };
 
   const dispatchMoney = () => {

@@ -1,3 +1,4 @@
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
     faCarrot,
     faShrimp,
@@ -36,7 +37,7 @@ import {
     faBoxesStacked,
     faCreditCard,
 } from "@fortawesome/free-solid-svg-icons";
-const iconList = [
+const iconList: { id: string, name: string, icon: IconProp }[] = [
     { id: "icon_3d2b1059968c5", name: "stroopwafel", icon: faStroopwafel },
     { id: "icon_aa90343dc3d49", name: "shrimp", icon: faShrimp },
     { id: "icon_46c261a2f21c6", name: "carrot", icon: faCarrot },

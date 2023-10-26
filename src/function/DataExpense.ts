@@ -1,23 +1,23 @@
-import { ExpenseData } from "@/app/expenseSlice";
+import { Expense } from "@/app/expenseSlice";
 
 export default class DataExpense {
-    #data: ExpenseData;
+    #data: Expense;
     constructor() {
         const isClient = typeof window !== 'undefined'
         const storage = isClient && localStorage.getItem('expense')
-        if (!storage && isClient) localStorage.setItem('expense', JSON.stringify([]))
+        if (!storage && isClient) localStorage.setItem('expense', JSON.stringify({}))
         const init = {
             initBalance: 0,
             finalBalance: 0,
-            currency: "vnd" as const,
+            currency: "vnd",
             wallet: "Tien mat",
             idWallet: "tienmat",
             data: {}
         }
-        const data = storage ? JSON.parse(storage) : init
-        this.#data = data
-        this.save()
 
+        const data = storage ? JSON.parse(storage) : init
+        console.log("locak", data);
+        this.#data = data
         // console.log("storate_____", JSON.parse(storage || localStorage.getItem('expense')))
         // console.log(localStorage.getItem('expense'));
 
@@ -47,12 +47,11 @@ export default class DataExpense {
     get get() {
         return this.#data
     }
-    set set(data: ExpenseData) {
+    set set(data: Expense) {
 
     }
-    save() {
-        console.log("data---", this.#data);
-
-        localStorage.setItem('expense', "[123]")
+    save(data: any) {
+        // console.log("data---", this.#data);
+        localStorage.setItem('expense', data)
     }
 }

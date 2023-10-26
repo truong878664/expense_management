@@ -1,4 +1,5 @@
 // import { expenseList } from './groupExpenseList';
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import iconList from "./Icon";
 
 export const groupExpenseList = [
@@ -93,6 +94,7 @@ export const findExpenseGroup = (id: string | number) => {
     const expenseFind = expenseList.find(item => item.id === id)
     if (expenseFind) {
         const iconFind = iconList.find(icon => icon.id === expenseFind.icon)
+
         return { ...expenseFind, iconFa: iconFind }
     }
 }
