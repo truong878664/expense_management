@@ -27,6 +27,14 @@ const config: Config = {
             transform: "translateX(0)",
           },
         },
+        "opacity": {
+          "0%": {
+            opacity: "0%"
+          },
+          "100%": {
+            opacity: "100%"
+          },
+        }
       },
     },
   },

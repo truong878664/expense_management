@@ -16,33 +16,8 @@ export default class DataExpense {
         }
 
         const data = storage ? JSON.parse(storage) : init
-        console.log("locak", data);
+        console.log("Data expense init", data);
         this.#data = data
-        // console.log("storate_____", JSON.parse(storage || localStorage.getItem('expense')))
-        // console.log(localStorage.getItem('expense'));
-
-
-        // this.#data = JSON.parse(storage || `
-        // {
-        //     initBalance: 0;
-        //     finalBalance: 0;
-        //     currency: "vnd";
-        //     wallet: "Tien mat";
-        //     idWallet: "tienmat";
-        //     data: {};
-        // }`)
-        // this.#data = {
-        //     initBalance: 0,
-        //     finalBalance: 0,
-        //     currency: "vnd" as const,
-        //     wallet: "Tien mat",
-        //     idWallet: "tienmat",
-        //     data: {
-        //         2023: {
-        //             10: {}
-        //         }
-        //     },
-        // }
     }
     get get() {
         return this.#data
@@ -51,7 +26,6 @@ export default class DataExpense {
 
     }
     save(data: any) {
-        // console.log("data---", this.#data);
         localStorage.setItem('expense', data)
     }
 }

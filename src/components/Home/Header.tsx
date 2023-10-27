@@ -6,17 +6,15 @@ import {
   faWallet,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import LiDate from "../header/LiDate";
-import { RefObject, memo, useEffect, useLayoutEffect, useRef } from "react";
+import { RefObject, memo, useEffect, useRef } from "react";
 import dateList from "@/function/dateList";
 
 function Header({ activeDate }: { activeDate: string }) {
   const dateWrapperRef: RefObject<HTMLUListElement> = useRef(null);
-  const behaviorRef = useRef<"auto" | "smooth">("smooth");
-  useLayoutEffect(() => {
+  useEffect(() => {
     dateWrapperRef.current?.querySelector(".active")?.scrollIntoView({
-      behavior: behaviorRef.current,
+      behavior: "smooth",
       block: "center",
       inline: "center",
     });
@@ -51,7 +49,7 @@ function Header({ activeDate }: { activeDate: string }) {
         <div className="w-full border-b">
           <ul
             ref={dateWrapperRef}
-            className="flex w-full select-none gap-4 overflow-y-hidden overflow-x-scroll whitespace-nowrap border-inherit px-6 py-2 scrollbar-none"
+            className="flex w-full select-none gap-4 overflow-x-auto overflow-y-hidden whitespace-nowrap border-inherit px-6 py-2 scrollbar-none"
           >
             {dateList.map((date, index) => {
               return (

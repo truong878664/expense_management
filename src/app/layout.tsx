@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={`${inconsolata.className} flex h-full w-full flex-col`}>
+      <body className={`${inconsolata.className}`}>
         <ReduxProvider>
           <main className="flex-1 overflow-hidden">{children}</main>
           {modal}

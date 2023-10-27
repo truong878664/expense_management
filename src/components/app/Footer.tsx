@@ -10,11 +10,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ItemFooter from "../footer/Item";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { getNode } from "@/function/getNode";
+import useQueryParams from "@/hooks/useQueryParams";
 
 function Footer() {
   const route = useRouter();
   const pathname = usePathname();
+  const paramsString = useQueryParams().paramsString();
   const onDismiss = () => {
     const addExpenseWrapper: HTMLDivElement | null = document.querySelector(
       "#add-expense-wrapper",
@@ -27,6 +28,7 @@ function Footer() {
       route.back();
     }, 500);
   };
+  console.log();
 
   return (
     <footer className="z-10">
@@ -51,7 +53,7 @@ function Footer() {
                 className="absolute left-1/2 top-0 z-10 aspect-square w-14 -translate-x-1/2 -translate-y-1/4"
               ></button>
             )}
-            <Link href={"/add-expense"}>
+            <Link href={"/add-expense" + paramsString}>
               <button
                 className={`${
                   pathname.indexOf("/add-expense") !== -1

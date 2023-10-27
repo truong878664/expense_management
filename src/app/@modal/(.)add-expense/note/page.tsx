@@ -37,9 +37,10 @@ function NotePage() {
       { translateX: "100%", opacity: 0 },
       { translateX: "0", duration: 0.3, opacity: 1 },
     );
+    noteRef.current?.focus();
   }, []);
   return (
-    <div ref={noteWrapperRef} className="h-full w-full">
+    <div ref={noteWrapperRef} className="flex h-full w-full flex-col">
       <div className="mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
         <button onClick={onBack} className="px-3">
           <FontAwesomeIcon icon={faAngleLeft} />
@@ -53,12 +54,12 @@ function NotePage() {
           Xong
         </button>
       </div>
-      <div className="px-4">
+      <div className="flex-1 px-4">
         <div
           ref={noteRef}
-          className="min-h-[100px] outline-none"
+          className="h-full min-h-[100px] outline-none"
           contentEditable
-          placeholder="Thêm ghi chú"
+          placeholder="Thêm ghi chú..."
           onInput={onValidateSubmit}
           suppressContentEditableWarning
         >

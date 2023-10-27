@@ -6,8 +6,6 @@ import {
   reset,
 } from "@/app/@modal/(.)add-expense/createExpenseSlice";
 import { ExpensePayload, add } from "@/app/expenseSlice";
-import CDate from "@/function/CDate";
-import { InitialState } from "@/app/test/counterSlice";
 import Money from "@/function/formatMoney";
 import { findExpenseGroup } from "@/function/groupExpenseList";
 import uid from "@/function/uid";
@@ -23,22 +21,29 @@ import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DateSelect from "../expense/DateSelect";
+import useDebounce from "@/hooks/useDebounce";
+import useQueryParams from "@/hooks/useQueryParams";
+import CDate from "@/function/CDate";
 
 function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const dispatch = useDispatch();
+  const params = useQueryParams();
   const expense = useSelector(
     (state: { createExpense: InitStateExpense }) => state.createExpense,
   );
-  const [value, setValue] = useState<string | number>(
+  const [money, setMoney] = useState<string | number>(
     Money.formatNumber(expense.money),
   );
+  const [moneyDebounce, setMoneyDebounce] = useDebounce<string>();
   const [dateSelect, setDateSelect] = useState<ReactElement | null>(null);
   const onchange = (e: any) => {
     const valueInput = Money.formatNumber(e.target.value);
-    setValue(valueInput);
+    setMoney(valueInput);
+    setMoneyDebounce(valueInput);
   };
-  const onReset = () => {
-    setValue(0);
+
+  const handleResetExpense = () => {
+    setMoney(0);
     dispatch(reset());
   };
   const onSubmit = () => {
@@ -47,23 +52,39 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
       type: "income",
     };
     dispatch(add(payloadExpense));
-    onReset();
+    handleResetExpense();
     handleDismiss();
   };
 
   const dispatchMoney = () => {
-    const moneyExpense = Number(value.toString().replaceAll(",", ""));
-    dispatch(extend({ money: moneyExpense }));
+    const moneyExpense = Number(money.toString().replaceAll(",", ""));
+    expense.money !== moneyExpense &&
+      (() => {
+        dispatch(extend({ money: moneyExpense }));
+        console.log("Dispatch money: ", moneyExpense);
+      })();
   };
   const groupSelector = findExpenseGroup(expense.group);
-  useEffect(() => {
-    dispatch(extend({ id: uid("ex") }));
-  }, []);
-
-  const onClickSelectDate = (e: any) => {
+  const onSelectDate = (e: any) => {
     setDateSelect(<DateSelect handleRemove={setDateSelect} />);
-    console.log(dateSelect);
   };
+  useEffect(() => {
+    console.log(params.get("date")?.split("/"));
+    const paramDate = params.get("date");
+    const dataDispatch: Partial<InitStateExpense> = { id: uid("ex") };
+    if (paramDate) {
+      const [date, month, year] = params.get("date").split("/");
+      const dataDispatchTime = new CDate().setTime({ date, month, year });
+      Object.assign(dataDispatch, {
+        date: dataDispatchTime.date,
+        month: dataDispatchTime.month,
+        year: dataDispatchTime.year,
+        day: dataDispatchTime.day,
+      });
+    }
+    dispatch(extend(dataDispatch));
+  }, []);
+  useEffect(dispatchMoney, [moneyDebounce]);
 
   return (
     <>
@@ -86,7 +107,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
 
             <input
               type="text"
-              value={value}
+              value={money}
               className="w-full bg-transparent text-2xl outline-none"
               onChange={onchange}
             />
@@ -138,7 +159,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
           </div>
           <button
             className="flex flex-1 items-center justify-between border-b pr-2"
-            onClick={onClickSelectDate}
+            onClick={onSelectDate}
           >
             <span className="">
               {expense.day}, {expense.date}/{expense.month}/{expense.year}
