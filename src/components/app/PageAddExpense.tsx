@@ -82,6 +82,8 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
         day: dataDispatchTime.day,
       });
     }
+    console.log("Dispatch date: ", dataDispatch);
+
     dispatch(extend(dataDispatch));
   }, []);
   useEffect(dispatchMoney, [moneyDebounce]);

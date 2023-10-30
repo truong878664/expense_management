@@ -4,7 +4,7 @@ export default class CDate {
         this.#date = new Date();
     }
     get today() {
-        return this.#date.toLocaleDateString();
+        return this.#date.toLocaleDateString('en-GB');
     }
     get year() {
         return this.#date.getFullYear();
@@ -28,14 +28,15 @@ export default class CDate {
     get second() {
         return this.#date.getSeconds()
     }
+
     calculateDay(date: number) {
         this.#date.setDate(this.#date.getDate() + date);
         return this.full
     }
     setTime({ date, month, year }: { date: number | string, month: number | string, year: number | string }) {
-        date && this.#date.setDate(+date);
-        month && this.#date.setMonth(+month - 1);
-        year && this.#date.setFullYear(+year);
+        date && this.#date.setDate(~~date);
+        month && this.#date.setMonth(~~month - 1);
+        year && this.#date.setFullYear(~~year);
         return this.full
     }
 

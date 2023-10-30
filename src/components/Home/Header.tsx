@@ -19,6 +19,7 @@ function Header({ activeDate }: { activeDate: string }) {
       inline: "center",
     });
   }, [activeDate]);
+
   return (
     <header>
       <div className="relative pt-2">

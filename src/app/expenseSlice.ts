@@ -62,6 +62,7 @@ const actions = {
         dataExpense.save((JSON.stringify(state)))
     },
 };
+
 const expenseSlice = createSlice({
     name: "createExpense",
     initialState,

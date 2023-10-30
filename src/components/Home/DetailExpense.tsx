@@ -10,7 +10,7 @@ import classNames from "classnames";
 import { memo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 function DetailExpense() {
-  const dateNow = new Date().toLocaleDateString();
+  const dateNow = new Date().toLocaleDateString("en-GB");
   const params = useQueryParams();
   const activeDate = params.get("date") || dateNow;
   const [expenseDayList, setExpenseDayList] = useState<ExpenseDay>();
@@ -25,10 +25,10 @@ function DetailExpense() {
     console.log("Render expense list day: ", activeDate);
   }, [expense, activeDate]);
 
-  const total = expenseDayList?.total;
+  const total = expenseDayList?.total || 0;
   const classNameTotalMoney = classNames("text-lg font-bold", {
-    "text-red-600": +expenseDayList?.total < 0,
-    "text-green-600": +expenseDayList?.total > 0,
+    "text-red-600": +total < 0,
+    "text-green-600": +total > 0,
   });
   const dataDispatchTime = new CDate().setTime({ date, month, year });
   return (
