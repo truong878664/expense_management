@@ -1,10 +1,11 @@
 export default class CDate {
+
     #date;
     constructor() {
         this.#date = new Date();
     }
     get today() {
-        return this.#date.toLocaleDateString();
+        return this.#date.toLocaleDateString(process.env.LOCAL_CODE, process.env.TIME_ZONE as any);
     }
     get year() {
         return this.#date.getFullYear();

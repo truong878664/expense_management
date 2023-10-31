@@ -7,7 +7,7 @@ function AddExpense() {
   const router = useRouter();
   return (
     <LayoutAddExpense>
-      <PageAddExpense handleDismiss={router.back} />;
+      <PageAddExpense handleDismiss={router.back} />
     </LayoutAddExpense>
   );
 }

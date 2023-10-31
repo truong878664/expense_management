@@ -22,12 +22,9 @@ import { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DateSelect from "../expense/DateSelect";
 import useDebounce from "@/hooks/useDebounce";
-import useQueryParams from "@/hooks/useQueryParams";
-import CDate from "@/function/CDate";
 
 function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const dispatch = useDispatch();
-  const params = useQueryParams();
   const expense = useSelector(
     (state: { createExpense: InitStateExpense }) => state.createExpense,
   );
@@ -65,24 +62,11 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
       })();
   };
   const groupSelector = findExpenseGroup(expense.group);
-  const onSelectDate = (e: any) => {
+  const onSelectDate = () => {
     setDateSelect(<DateSelect handleRemove={setDateSelect} />);
   };
   useEffect(() => {
-    console.log(params.get("date")?.split("/"));
-    const paramDate = params.get("date");
-    const dataDispatch: Partial<InitStateExpense> = { id: uid("ex") };
-    if (paramDate) {
-      const [date, month, year] = params.get("date").split("/");
-      const dataDispatchTime = new CDate().setTime({ date, month, year });
-      Object.assign(dataDispatch, {
-        date: dataDispatchTime.date,
-        month: dataDispatchTime.month,
-        year: dataDispatchTime.year,
-        day: dataDispatchTime.day,
-      });
-    }
-    dispatch(extend(dataDispatch));
+    dispatch(extend({ id: uid("ex") }));
   }, []);
   useEffect(dispatchMoney, [moneyDebounce]);
 

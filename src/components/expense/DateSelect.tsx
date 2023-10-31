@@ -26,7 +26,7 @@ function DateSelect({ handleRemove }: DateSelect) {
     useState<ReactElement | null>(null);
 
   const classNameItemSelect = classNames(
-    "rounded-2xl bg-gray-200 py-4 shadow-md shadow-black/20 last:mt-4",
+    "w-full max-w-md rounded-2xl bg-gray-200 py-4 shadow-md shadow-black/20 last:mt-4",
   );
 
   useEffect(() => {
@@ -45,7 +45,6 @@ function DateSelect({ handleRemove }: DateSelect) {
         translateY: "100%",
         opacity: 0,
         duration: 0.2,
-
         onComplete: () => {
           handleRemove(null);
         },
@@ -70,6 +69,7 @@ function DateSelect({ handleRemove }: DateSelect) {
     },
     remove() {
       setOptionDateComponent(null);
+      handleRemove(null);
     },
   };
 
@@ -83,7 +83,7 @@ function DateSelect({ handleRemove }: DateSelect) {
         <div className="absolute-screen" onClick={onRemove}></div>
         <div
           ref={dateSelectRef}
-          className="mb-6 flex w-full shrink flex-col gap-3 px-1"
+          className="mb-6 flex w-full shrink flex-col items-center justify-center gap-3 px-1"
         >
           <button
             data-minus-date="-3"
