@@ -14,6 +14,7 @@ import {
 } from "react";
 import { useDispatch } from "react-redux";
 import OptionSelectDate from "./OptionSelectDate";
+import Button from "../app/Button";
 
 type DateSelect = {
   handleRemove: (reactElement: null) => void;
@@ -24,10 +25,6 @@ function DateSelect({ handleRemove }: DateSelect) {
   const dispatch = useDispatch();
   const [optionDateComponent, setOptionDateComponent] =
     useState<ReactElement | null>(null);
-
-  const classNameItemSelect = classNames(
-    "w-full max-w-md rounded-2xl bg-gray-200 py-4 shadow-md shadow-black/20 last:mt-4",
-  );
 
   useEffect(() => {
     gsap.fromTo(
@@ -67,9 +64,9 @@ function DateSelect({ handleRemove }: DateSelect) {
         <OptionSelectDate handleRemove={onOptionDate.remove} />,
       );
     },
-    remove() {
+    remove(type: "all" | "option") {
+      if (type === "all") onRemove();
       setOptionDateComponent(null);
-      handleRemove(null);
     },
   };
 
@@ -78,44 +75,26 @@ function DateSelect({ handleRemove }: DateSelect) {
       {optionDateComponent}
       <div
         id="date-select-wrapper"
-        className="absolute left-0 top-0 grid h-full w-full items-end overflow-hidden rounded-t-3xl bg-white/10 text-center font-bold backdrop-blur-sm"
+        className="absolute left-0 top-0 grid h-full w-full items-end overflow-hidden rounded-t-3xl bg-white/10 backdrop-blur-sm"
       >
         <div className="absolute-screen" onClick={onRemove}></div>
         <div
           ref={dateSelectRef}
-          className="mb-6 flex w-full shrink flex-col items-center justify-center gap-3 px-1"
+          className="mb-6 flex w-full shrink flex-col items-center justify-center gap-2 px-1"
         >
-          <button
-            data-minus-date="-3"
-            onClick={onOptionDate.show}
-            className={classNameItemSelect}
-          >
+          <Button data-minus-date="-3" onClick={onOptionDate.show}>
             Tùy chọn
-          </button>
-          <button
-            data-minus-date="-2"
-            onClick={onDispatchDate}
-            className={classNameItemSelect}
-          >
+          </Button>
+          <Button data-minus-date="-2" onClick={onDispatchDate}>
             Hôm kia
-          </button>
-          <button
-            data-minus-date="-1"
-            onClick={onDispatchDate}
-            className={classNameItemSelect}
-          >
+          </Button>
+          <Button data-minus-date="-1" onClick={onDispatchDate}>
             Hôm qua
-          </button>
-          <button
-            data-minus-date="0"
-            onClick={onDispatchDate}
-            className={classNameItemSelect}
-          >
+          </Button>
+          <Button data-minus-date="0" onClick={onDispatchDate}>
             Hôm nay
-          </button>
-          <button onClick={onRemove} className={classNameItemSelect}>
-            Hủy
-          </button>
+          </Button>
+          <Button onClick={onRemove}>Hủy</Button>
         </div>
       </div>
     </>

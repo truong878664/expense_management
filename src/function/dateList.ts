@@ -19,6 +19,8 @@ function createDateList() {
             title
         })
     }
+    console.log(new Date().toLocaleDateString(...optionFormatTime));
+
     return dateList;
 }
 

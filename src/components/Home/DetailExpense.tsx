@@ -1,5 +1,5 @@
 "use client";
-import { ExpenseDay } from "@/app/expenseSlice";
+import { Expense, ExpenseDay, ExpenseList } from "@/app/expenseSlice";
 import ItemExpense from "@/components/expense/ItemExpense";
 import CDate from "@/function/CDate";
 import Money from "@/function/formatMoney";
@@ -7,8 +7,14 @@ import { findExpenseGroup } from "@/function/groupExpenseList";
 import useQueryParams from "@/hooks/useQueryParams";
 import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
-import { memo, useEffect, useState } from "react";
+import { memo, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import box from "@/assets/empty-box.png";
+import Image from "next/image";
+import shortHandString from "@/function/shortHandString";
+import copy from "@/function/copy";
+import sum from "@/function/sum";
+
 function DetailExpense() {
   const dateNow = new Date().toLocaleDateString(
     process.env.LOCAL_CODE,
@@ -17,35 +23,86 @@ function DetailExpense() {
   const params = useQueryParams();
   const activeDate = params.get("date") || dateNow;
   const [expenseDayList, setExpenseDayList] = useState<ExpenseDay>();
+  const [bgEmptyBox, setBgEmptyBox] = useState("");
+  const [previousTotal, setPreviousTotal] = useState(0);
+
   const expense = useSelector(
-    (state: { createSlice: any }) => state.createSlice,
+    (state: { createSlice: Expense }) => state.createSlice,
   );
   const [date, month, year] = activeDate.split("/");
-  useEffect(() => {
+  const totalDay = expenseDayList?.total || 0;
+
+  useLayoutEffect(() => {
     const { data } = expense;
-    const expenseDayList: ExpenseDay = data?.[year]?.[month]?.[date];
+    const expenseDayList: ExpenseDay = data?.[+year]?.[+month]?.[+date];
     setExpenseDayList(expenseDayList);
+    setBgEmptyBox(
+      "#" + Math.floor(Math.random() * 16777215).toString(16) + "22",
+    );
     console.log("Render expense list day: ", activeDate);
+
+    if (!expense.data) return;
+    const listExpense: ExpenseDay[] = [];
+    Object.keys(expense?.data)?.map((yearM: any) => {
+      if (Number(yearM) > Number(year)) return;
+      const yearList = expense.data[yearM];
+      if (!yearList) return;
+      Object.keys(yearList).map((monthM: any) => {
+        if (Number(monthM) > Number(month) && Number(yearM) === Number(year))
+          return;
+        const monthList = yearList[monthM];
+        if (!monthList) return;
+        Object.keys(monthList).map((dateM: any) => {
+          if (
+            Number(dateM) >= Number(date) &&
+            Number(monthM) === Number(month) &&
+            Number(yearM) === Number(year)
+          )
+            return;
+
+          if (!monthList[dateM]) return;
+          listExpense.push(copy(monthList[dateM]));
+          return listExpense;
+        });
+      });
+    });
+
+    const previousSum = sum(listExpense, expense.initBalance);
+    setPreviousTotal(previousSum);
   }, [expense, activeDate]);
 
-  const total = expenseDayList?.total || 0;
-  const classNameTotalMoney = classNames("text-lg font-bold", {
-    "text-red-600": total < 0,
-    "text-green-600": total > 0,
-  });
   const dataDispatchTime = new CDate().setTime({ date, month, year });
+
   return (
     <>
       <div className="bg-gray-100 p-2">
         <div className="flex w-full justify-between">
-          <div className="flex flex-col">
-            <span className="mb-1">Số dư đầu</span>
-            <span className="mb-1">Số dư cuối</span>
+          <div className="flex flex-col gap-1">
+            <span>Số dư đầu</span>
+            <span>Số dư cuối</span>
           </div>
-          <div className="flex flex-col items-end">
-            <span className="mb-1">+7,800,000 đ</span>
-            <span className="mb-1 border-b">+7,800,000 đ</span>
-            <span className="mb-1">-29,000 đ</span>
+          <div className="flex flex-col items-end gap-1 font-bold">
+            <span
+              className={classNames({
+                "text-red-600": previousTotal < 0,
+              })}
+            >
+              {Money.format(previousTotal)}
+            </span>
+            <span
+              className={classNames("border-b", {
+                "text-red-600": previousTotal + totalDay < 0,
+              })}
+            >
+              {Money.format(previousTotal + totalDay)}
+            </span>
+            <span
+              className={classNames({
+                "text-red-600": totalDay < 0,
+              })}
+            >
+              {Money.format(totalDay)}
+            </span>
           </div>
         </div>
         <div className="text-center text-green-600">
@@ -53,8 +110,8 @@ function DetailExpense() {
         </div>
       </div>
 
-      <div className="mt-6 bg-gray-100 p-2">
-        <div className="sticky top-0 z-1 flex items-center justify-between bg-gray-100 shadow shadow-gray-100">
+      <div className="my-2 mt-6 flex flex-1 flex-col">
+        <div className="sticky top-0 z-1 flex items-center justify-between bg-gray-100 p-2 shadow shadow-gray-100">
           <div className="flex">
             <span className="mr-2 text-4xl font-bold text-sky-700">{date}</span>
             <div className="flex flex-col justify-center text-sm leading-tight">
@@ -64,27 +121,54 @@ function DetailExpense() {
               </span>
             </div>
           </div>
-          <span className={classNameTotalMoney}>
-            {Money.format(expenseDayList?.total as number)}
+          <span
+            className={classNames("text-lg font-bold", {
+              "text-red-600": totalDay < 0,
+              "text-green-600": totalDay > 0,
+              "sr-only": totalDay === 0,
+            })}
+          >
+            {Money.format(totalDay)}
           </span>
         </div>
 
-        <div className="mt-3">
-          {expenseDayList?.expenseList.map((item, index: number) => {
-            const group = findExpenseGroup(item.group);
-            return (
-              <ItemExpense
-                key={index}
-                type={index % 2 ? "expense" : "income"}
-                kind={group?.title || "Không có tiêu đề"}
-                describe={item.describe || ""}
-                value={Money.format(item.money)}
-                icon={group?.iconFa?.icon || faPaw}
-                color={(group?.color as `#${string}`) || "#F875AA"}
+        {expenseDayList ? (
+          <ul className="mb-10 flex flex-col gap-5 bg-gray-100 px-2 py-4">
+            {expenseDayList.expenseList.map((item, index: number) => {
+              const group = findExpenseGroup(item.group);
+              return (
+                <ItemExpense
+                  key={index}
+                  type={group?.type || "expense"}
+                  kind={group?.title || "Không có tiêu đề"}
+                  describe={shortHandString(item.describe)}
+                  value={item.money}
+                  icon={group?.iconFa?.icon || faPaw}
+                  color={(group?.color as `#${string}`) || "#F875AA"}
+                />
+              );
+            })}
+          </ul>
+        ) : (
+          <div className="grid flex-1 place-content-center bg-cyan-50/20">
+            <div className="relative h-72 w-72 p-16">
+              <div
+                className="absolute left-0 top-0 -z-1 h-full w-full rounded-full blur-3xl"
+                style={{
+                  backgroundColor: bgEmptyBox,
+                }}
+              ></div>
+              <Image
+                src={box.src}
+                width={box.width}
+                height={box.height}
+                alt="Empty box error"
+                className="grid h-full place-content-center object-contain text-center font-bold text-red-500"
+                priority
               />
-            );
-          })}
-        </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

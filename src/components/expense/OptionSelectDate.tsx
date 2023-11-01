@@ -3,9 +3,11 @@ import { extend } from "@/app/@modal/(.)add-expense/createExpenseSlice";
 import CDate from "@/function/CDate";
 import findElementByPositionAndDataName from "@/function/findElementByPositionAndDataName";
 import useDebounce from "@/hooks/useDebounce";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+// import { faChevronCircleDown } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import gsap from "gsap";
 import {
   MouseEventHandler,
   RefObject,
@@ -14,6 +16,7 @@ import {
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Button from "../app/Button";
 
 type LiNode = ChildNode | null | undefined;
 type EffectChangeDate = {
@@ -26,11 +29,17 @@ type ValueDateRef = {
   year: number;
 };
 
-function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
+function OptionSelectDate({
+  handleRemove,
+}: {
+  handleRemove: (type: "all" | "option") => void;
+}) {
   const getNode = document.querySelector.bind(document);
   const dispatch = useDispatch();
   const date = new CDate();
 
+  const optionSelectDateWrapperRef: RefObject<HTMLDivElement> = useRef(null);
+  const dayWrapperRef: RefObject<HTMLDivElement> = useRef(null);
   const dayElementRef: RefObject<HTMLUListElement> = useRef(null);
   const monthElementRef: RefObject<HTMLUListElement> = useRef(null);
   const yearElementRef: RefObject<HTMLUListElement> = useRef(null);
@@ -46,7 +55,7 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
   );
 
   const classNameUlDate = classNames(
-    "absolute left-0 top-1/2  h-96 w-full -translate-y-1/2 cursor-n-resize select-none snap-y snap-mandatory overflow-auto text-center scrollbar-none first:pt-[11.4rem] last:pb-[11.4rem] [&_li]:py-2",
+    "absolute left-0 top-1/2 h-96 w-full -translate-y-1/2 cursor-n-resize select-none snap-y snap-mandatory overflow-auto text-center scrollbar-none first:pt-[11.4rem] last:pb-[11.4rem] [&_li]:py-2",
   );
 
   const classListEffect = [
@@ -83,6 +92,17 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
     );
   };
 
+  const onRemove = (type: "all" | "option" = "option") => {
+    gsap.to(optionSelectDateWrapperRef.current, {
+      translateY: "100%",
+      duration: 0.3,
+      opacity: 1,
+      onComplete: () => {
+        handleRemove(type);
+      },
+    });
+  };
+
   const onSubmit: MouseEventHandler<HTMLButtonElement> = () => {
     const dataDispatchTime = new CDate().setTime({
       date: valueDateRef.current?.date || date.date,
@@ -97,7 +117,7 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
         day: dataDispatchTime.day,
       }),
     );
-    handleRemove();
+    onRemove("all");
   };
 
   useEffect(() => {
@@ -146,20 +166,33 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
   };
 
   useEffect(() => {
-    ["date", "month", "year"]
-      .map((key) =>
-        getNode(
-          `[data-name="${key}-select"][data-value='${
-            expense[key as keyof typeof expense]
-          }']`,
-        ),
-      )
-      .forEach((li) => {
-        li?.scrollIntoView({
-          behavior: "auto",
-          block: "center",
+    const scrollInitSelectDate = () => {
+      ["date", "month", "year"]
+        .map((key) =>
+          getNode(
+            `[data-name="${key}-select"][data-value='${
+              expense[key as keyof typeof expense]
+            }']`,
+          ),
+        )
+        .forEach((li) => {
+          li?.scrollIntoView({
+            behavior: "auto",
+            block: "center",
+          });
         });
-      });
+      gsap.fromTo(dayWrapperRef.current, { opacity: 0 }, { opacity: 1 });
+    };
+    gsap.fromTo(
+      optionSelectDateWrapperRef.current,
+      { translateY: "100%", opacity: 0 },
+      {
+        translateY: "0",
+        duration: 0.3,
+        opacity: 1,
+        onComplete: scrollInitSelectDate,
+      },
+    );
   }, []);
 
   useEffect(() => {
@@ -177,16 +210,17 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
     });
   }, [debounceChangeDate]);
 
-  const classNameButtonSubmit = classNames(
-    "rounded-2xl bg-gray-200 p-4 text-center font-bold shadow-md shadow-black/20 last:mt-4 [&.disable]:pointer-events-none [&.disable]:text-gray-700 [&.disable]:opacity-80 [&.disable]:shadow-lg",
-    { disable: !loading },
-  );
-
   return (
-    <div className="bg-/10 fixed bottom-0 left-0 right-0 top-0 z-10 flex flex-col overflow-hidden p-4 backdrop-blur-sm">
-      <div className="grid flex-1 place-content-center">
+    <div
+      ref={optionSelectDateWrapperRef}
+      className="bg-/10 fixed bottom-0 left-0 right-0 top-0 z-10 flex flex-col overflow-hidden p-4 backdrop-blur-sm"
+    >
+      <div
+        ref={dayWrapperRef}
+        className="grid flex-1 place-content-center opacity-0"
+      >
         <div className="flex gap-6 text-2xl font-bold">
-          <div className="relative h-9 w-14 border border-black/10 px-4 py-2 backdrop-blur-sm">
+          <div className="relative h-9 w-16 border border-black/10 px-4 py-2 backdrop-blur-sm">
             <ul ref={dayElementRef} className={classNameUlDate}>
               {Array.from({ length: 31 }).map((item, index) => {
                 const day = index + 1;
@@ -196,7 +230,7 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
                     data-value={day}
                     data-label="date"
                     data-name="date-select"
-                    className="snap-center transition-all duration-200"
+                    className="snap-center"
                   >
                     {day}
                   </li>
@@ -204,7 +238,7 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
               })}
             </ul>
           </div>
-          <div className="relative h-9 w-14 border border-black/10 px-4 py-2 backdrop-blur-sm">
+          <div className="relative h-9 w-16 border border-black/10 px-4 py-2 backdrop-blur-sm">
             <ul className={classNameUlDate} ref={monthElementRef}>
               {Array.from({ length: 12 }).map((item, index) => {
                 const month = index + 1;
@@ -214,7 +248,7 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
                     data-value={month}
                     data-label="month"
                     data-name="month-select"
-                    className="snap-center transition-all duration-200 "
+                    className="snap-center "
                   >
                     {month}
                   </li>
@@ -222,7 +256,7 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
               })}
             </ul>
           </div>
-          <div className="relative h-9 w-14 border border-black/10 px-4 py-2 backdrop-blur-sm">
+          <div className="relative h-9 w-16 border border-black/10 px-4 py-2 backdrop-blur-sm">
             <ul className={classNameUlDate} ref={yearElementRef}>
               {Array.from({ length: 30 }).map((item, index) => {
                 const year = 2005 + index;
@@ -232,7 +266,7 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
                     data-value={year}
                     data-label="year"
                     data-name="year-select"
-                    className="snap-center transition-all duration-200"
+                    className="snap-center"
                   >
                     {year}
                   </li>
@@ -242,15 +276,16 @@ function OptionSelectDate({ handleRemove }: { handleRemove: () => void }) {
           </div>
         </div>
       </div>
-      <button onClick={onSubmit} className={classNameButtonSubmit}>
-        Chọn
-      </button>
-      <button
-        onClick={handleRemove}
-        className="absolute right-0 top-0 aspect-square px-4 py-2 text-slate-700"
+      <Button
+        onClick={onSubmit}
+        className={classNames(
+          "[&.disable]:pointer-events-none [&.disable]:text-gray-400",
+          { disable: !loading },
+        )}
       >
-        <FontAwesomeIcon icon={faXmark} />
-      </button>
+        Chọn
+      </Button>
+      <Button onClick={() => onRemove()}>Hủy</Button>
     </div>
   );
 }

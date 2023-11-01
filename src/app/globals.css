@@ -9,7 +9,7 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  @apply flex h-full w-full flex-col;
+  @apply flex h-full w-full flex-col caret-pink-600 selection:bg-pink-400 selection:text-white;
 }
 button,
 textarea,
@@ -48,6 +48,7 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
+
 .loader {
   font-size: 7px;
   width: 1em;

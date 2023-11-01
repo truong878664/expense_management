@@ -36,13 +36,13 @@ function Footer() {
         <ul className="grid w-full grid-cols-5 whitespace-nowrap border-t">
           <ItemFooter
             active={pathname === "/overview"}
-            href="/overview"
+            href={"/overview" + paramsString}
             icon={faHouse}
             title="Tổng quan"
           />
           <ItemFooter
             active={pathname === "/"}
-            href="/"
+            href={"/" + paramsString}
             icon={faWallet}
             title="Sổ giao dịch"
           />
@@ -67,13 +67,13 @@ function Footer() {
           </li>
           <ItemFooter
             active={pathname === "/budget"}
-            href="/budget"
+            href={"/budget" + paramsString}
             icon={faClipboardList}
             title="Ngân sách"
           />
           <ItemFooter
             active={pathname === "/account"}
-            href="/account"
+            href={"/account" + paramsString}
             icon={faUser}
             title="Tài khoản"
           />

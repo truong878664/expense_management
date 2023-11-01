@@ -5,15 +5,15 @@ export default class DataExpense {
     constructor() {
         const isClient = typeof window !== 'undefined'
         const storage = isClient && localStorage.getItem('expense')
-        if (!storage && isClient) localStorage.setItem('expense', JSON.stringify({}))
         const init = {
             initBalance: 0,
             finalBalance: 0,
             currency: "vnd",
-            wallet: "Tien mat",
+            wallet: "Tiền mặt",
             idWallet: "tienmat",
             data: {}
         }
+        if (!storage && isClient) localStorage.setItem('expense', JSON.stringify(init))
 
         const data = storage ? JSON.parse(storage) : init
         console.log("Data expense init", data);
@@ -25,7 +25,8 @@ export default class DataExpense {
     set set(data: Expense) {
 
     }
-    save(data: any) {
+    save(data: string) {
+        console.log("Save data to localStorage");
         localStorage.setItem('expense', data)
     }
 }

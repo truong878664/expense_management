@@ -14,7 +14,7 @@ function ItemFooter({
   href: string;
 }) {
   const classItemActive = classNames(
-    "[&.active]:text-gray-900 [&.active]:font-bold",
+    "[&.active]:font-bold [&.active]:text-gray-900",
     { active },
   );
 
@@ -25,7 +25,7 @@ function ItemFooter({
         className={`${classItemActive} flex flex-col items-center justify-end gap-1 p-1 text-gray-400 hover:text-gray-500`}
       >
         <FontAwesomeIcon className="text-xl" icon={icon} />
-        <span className="text-xs">{title}</span>
+        <span className="text-xs max-[320px]:text-[0.6rem]">{title}</span>
       </Link>
     </li>
   );
