@@ -23,7 +23,6 @@ export type ExpenseList = {
     group: number | string;
     describe?: string;
     money: number;
-    day: string;
 };
 export type Expense = {
     initBalance: number;

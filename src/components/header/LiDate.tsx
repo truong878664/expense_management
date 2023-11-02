@@ -10,14 +10,14 @@ interface LiDate {
 
 function LiDate({ title, active, value }: LiDate) {
   const classItemActive = classNames(
-    "[&.active]:font-bold [&.active]:border-black/60",
+    "[&.active]:border-black/60 [&.active]:font-bold",
     { active },
   );
   return (
-    <li>
+    <li className="mb-[3px] mt-1">
       <Link
         href={"?date=" + value}
-        className={`border-b-2 border-transparent px-2 py-2 uppercase hover:border-gray-200 hover:font-medium ${classItemActive}`}
+        className={`border-b-2 border-transparent px-2 py-1 uppercase hover:border-gray-200 hover:font-medium ${classItemActive}`}
       >
         {title}
       </Link>

@@ -19,7 +19,7 @@ import dateList from "@/function/dateList";
 import { useSelector } from "react-redux";
 import { Expense } from "@/app/expenseSlice";
 import Money from "@/function/formatMoney";
-import downloadXlsx from "@/function/dowload";
+import MoreAction from "./MoreAction";
 
 function Header({ activeDate }: { activeDate: string }) {
   const dateWrapperRef: RefObject<HTMLUListElement> = useRef(null);
@@ -48,28 +48,11 @@ function Header({ activeDate }: { activeDate: string }) {
   return (
     <header>
       <div className="relative pt-2">
-        <div className="absolute right-4 top-2 flex gap-6">
-          <button className="rounded-md px-3 py-1 hover:bg-gray-500/10">
+        <div className="absolute right-1 top-2 flex gap-4">
+          <button className="min-w-[40px] rounded-md px-3 py-1">
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
-          <div className="group/more-action relative">
-            <button className="rounded-md px-3 py-1 hover:bg-gray-500/10">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </button>
-
-            <ul className="absolute right-0 top-full hidden whitespace-nowrap rounded bg-gray-50 py-2 text-sm shadow group-hover/more-action:block">
-              <li>
-                <button
-                  onClick={() => {
-                    downloadXlsx("expense.xlsx", expense);
-                  }}
-                  className="cursor-pointer px-2 py-1"
-                >
-                  Export file excel
-                </button>
-              </li>
-            </ul>
-          </div>
+          <MoreAction expense={expense} />
         </div>
         <div className="flex justify-center">
           <div className="flex flex-col text-center">
@@ -90,7 +73,7 @@ function Header({ activeDate }: { activeDate: string }) {
         <div className="w-full border-b">
           <ul
             ref={dateWrapperRef}
-            className="flex w-full select-none gap-4 overflow-x-auto overflow-y-hidden whitespace-nowrap border-inherit px-6 py-2 scrollbar-none"
+            className="flex w-full select-none gap-4 overflow-x-auto overflow-y-hidden whitespace-nowrap border-inherit px-6 py-1 text-sm scrollbar-none"
           >
             {dateList.map((date, index) => {
               return (

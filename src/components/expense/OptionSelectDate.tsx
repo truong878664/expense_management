@@ -213,13 +213,13 @@ function OptionSelectDate({
   return (
     <div
       ref={optionSelectDateWrapperRef}
-      className="bg-/10 fixed bottom-0 left-0 right-0 top-0 z-10 flex flex-col overflow-hidden p-4 backdrop-blur-sm"
+      className="fixed bottom-0 left-0 right-0 top-0 z-20 flex flex-col items-center overflow-hidden p-4 backdrop-blur-sm"
     >
       <div
         ref={dayWrapperRef}
         className="grid flex-1 place-content-center opacity-0"
       >
-        <div className="flex gap-6 text-2xl font-bold">
+        <div className="flex gap-6 text-2xl font-bold text-gray-600">
           <div className="relative h-9 w-16 border border-black/10 px-4 py-2 backdrop-blur-sm">
             <ul ref={dayElementRef} className={classNameUlDate}>
               {Array.from({ length: 31 }).map((item, index) => {

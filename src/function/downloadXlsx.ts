@@ -21,7 +21,7 @@ function downloadXlsx(filename: string, expense: Expense) {
     const header = "STT,Ngày,Mô tả,Tên nhóm,Số tiền"
     const total = `,,,,` + sum(expenseDayList, 0)
 
-    const dataXlsx = `Tên ví, ${wallet}\nLoại tiền,${currency}\nSố dư đầu,${initBalance}\nSố dư cuối,${finalBalance}\n${header}\n${dataExpenseList.join("\n")}\n${total}`
+    const dataXlsx = `Tên ví,${wallet}\nLoại tiền,${currency}\nSố dư đầu,${initBalance}\nSố dư cuối,${finalBalance}\n${header}\n${dataExpenseList.join("\n")}\n${total}`
 
     const aElement = document.createElement("a");
     aElement.setAttribute(

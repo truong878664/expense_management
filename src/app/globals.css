@@ -9,8 +9,12 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  @apply flex h-full w-full flex-col caret-pink-600 selection:bg-pink-400 selection:text-white;
+  @apply flex h-full w-full flex-col caret-pink-600 outline-lime-600 selection:bg-pink-400 selection:text-white;
 }
+:focus-visible {
+  @apply outline-gray-400;
+}
+
 button,
 textarea,
 input,

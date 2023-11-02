@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className="flex h-full flex-col">
       <Header activeDate={activeDate} />
-      <div className=" flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+      <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
         <DetailExpense />
       </div>
     </div>

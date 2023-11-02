@@ -1,3 +1,3 @@
-export interface Object<T> {
+export type Object<T> = {
     [key: string]: T;
 }

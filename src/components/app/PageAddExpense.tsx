@@ -95,7 +95,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
               type="text"
               value={money}
               className={classNames(
-                "w-full bg-transparent text-2xl outline-none",
+                "w-full bg-transparent text-2xl focus:outline-none",
                 { "text-gray-500": money === "0" },
               )}
               onChange={onchange}

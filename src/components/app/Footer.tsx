@@ -53,13 +53,13 @@ function Footer() {
                 className="absolute left-1/2 top-0 z-10 aspect-square w-14 -translate-x-1/2 -translate-y-1/4"
               ></button>
             )}
-            <Link href={"/add-expense" + paramsString}>
+            <Link tabIndex={-1} href={"/add-expense" + paramsString}>
               <button
                 className={`${
                   pathname.indexOf("/add-expense") !== -1
                     ? "rotate-[135deg] bg-red-400"
                     : "bg-c-green"
-                } grid aspect-square w-14 -translate-y-1/4 place-content-center rounded-full text-2xl text-white shadow-md transition-all duration-700 `}
+                } grid aspect-square w-12 -translate-y-1/4 place-content-center rounded-full text-2xl text-white shadow-md transition-all duration-700 `}
               >
                 <FontAwesomeIcon icon={faPlus} className="blur-0" />
               </button>
