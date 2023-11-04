@@ -12,7 +12,7 @@ import uid from "@/function/uid";
 import {
   faAlignLeft,
   faAngleRight,
-  faCalendarDay,
+  faAngleUp,
   faCaretDown,
   faStroopwafel,
 } from "@fortawesome/free-solid-svg-icons";
@@ -22,12 +22,12 @@ import { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DateSelect from "../expense/DateSelect";
 import useDebounce from "@/hooks/useDebounce";
-import useQueryParams from "@/hooks/useQueryParams";
-import CDate from "@/function/CDate";
+import classNames from "classnames";
+import shortHandString from "@/function/shortHandString";
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 
 function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const dispatch = useDispatch();
-  const params = useQueryParams();
   const expense = useSelector(
     (state: { createExpense: InitStateExpense }) => state.createExpense,
   );
@@ -49,7 +49,6 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const onSubmit = () => {
     const payloadExpense: ExpensePayload = {
       ...expense,
-      type: "income",
     };
     dispatch(add(payloadExpense));
     handleResetExpense();
@@ -65,26 +64,11 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
       })();
   };
   const groupSelector = findExpenseGroup(expense.group);
-  const onSelectDate = (e: any) => {
+  const onSelectDate = () => {
     setDateSelect(<DateSelect handleRemove={setDateSelect} />);
   };
   useEffect(() => {
-    console.log(params.get("date")?.split("/"));
-    const paramDate = params.get("date");
-    const dataDispatch: Partial<InitStateExpense> = { id: uid("ex") };
-    if (paramDate) {
-      const [date, month, year] = params.get("date").split("/");
-      const dataDispatchTime = new CDate().setTime({ date, month, year });
-      Object.assign(dataDispatch, {
-        date: dataDispatchTime.date,
-        month: dataDispatchTime.month,
-        year: dataDispatchTime.year,
-        day: dataDispatchTime.day,
-      });
-    }
-    console.log("Dispatch date: ", dataDispatch);
-
-    dispatch(extend(dataDispatch));
+    dispatch(extend({ id: uid("ex") }));
   }, []);
   useEffect(dispatchMoney, [moneyDebounce]);
 
@@ -100,7 +84,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
       <div className="mt-6 flex flex-col gap-2 bg-gray-200/70 p-2">
         <div className="flex gap-4">
           <div className="grid aspect-square w-10 place-content-center">
-            <span className="inline-block rounded-md border border-gray-300 px-2 font-bold uppercase text-gray-400">
+            <span className="inline-block rounded-md border border-gray-300 px-2 font-bold uppercase text-gray-500">
               vnd
             </span>
           </div>
@@ -110,7 +94,10 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
             <input
               type="text"
               value={money}
-              className="w-full bg-transparent text-2xl outline-none"
+              className={classNames(
+                "w-full bg-transparent text-2xl focus:outline-none",
+                { "text-gray-500": money === "0" },
+              )}
               onChange={onchange}
             />
           </div>
@@ -132,7 +119,11 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
             href={"/add-expense/group"}
             className="flex flex-1 items-center justify-between border-b pr-2"
           >
-            <span className="text-2xl text-gray-600">
+            <span
+              className={classNames("text-2xl", {
+                "text-gray-500": !groupSelector?.title,
+              })}
+            >
               {groupSelector?.title || "Chọn nhóm"}
             </span>
             <FontAwesomeIcon className="text-gray-400" icon={faAngleRight} />
@@ -147,9 +138,13 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
             href={"/add-expense/note"}
             className="flex flex-1 items-center justify-between border-b pr-2"
           >
-            <span className="">
+            <span
+              className={classNames({
+                "text-gray-500": !expense.describe,
+              })}
+            >
               {expense.describe && expense.describe?.length > 20
-                ? expense.describe?.slice(0, 20) + "..."
+                ? shortHandString(expense.describe)
                 : expense.describe || "Ghi chú"}
             </span>
             <FontAwesomeIcon className="text-gray-400" icon={faAngleRight} />
@@ -157,7 +152,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
         </div>
         <div className="flex gap-4">
           <div className="grid aspect-square w-10 place-content-center text-gray-500">
-            <FontAwesomeIcon className="text-gray-400" icon={faCalendarDay} />
+            <FontAwesomeIcon className="text-gray-400" icon={faCalendar} />
           </div>
           <button
             className="flex flex-1 items-center justify-between border-b pr-2"
@@ -166,7 +161,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
             <span className="">
               {expense.day}, {expense.date}/{expense.month}/{expense.year}
             </span>
-            <FontAwesomeIcon className="text-gray-400" icon={faAngleRight} />
+            <FontAwesomeIcon className="text-gray-400" icon={faAngleUp} />
           </button>
         </div>
       </div>

@@ -1,4 +1,8 @@
 import DataExpense from "@/function/DataExpense";
+import copy from "@/function/copy";
+import { findExpenseGroup } from "@/function/groupExpenseList";
+import sum from "@/function/sum";
+import toExpenseDayList from "@/function/toExpenseListDay";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type ExpenseData = {
@@ -19,8 +23,6 @@ export type ExpenseList = {
     group: number | string;
     describe?: string;
     money: number;
-    type: "income" | "expense";
-    day: string;
 };
 export type Expense = {
     initBalance: number;
@@ -50,15 +52,29 @@ const actions = {
         });
 
         dayData.expenseList = [
-            ...JSON.parse(JSON.stringify(dayData.expenseList)),
+            ...copy(dayData.expenseList),
             expenseItem,
         ];
+
         const totalMoney = Array.from(dayData.expenseList).reduce(
-            (sum: number, expense: ExpenseList) => expense.money + sum,
+            (sum: number, expense: ExpenseList) => {
+                const group = findExpenseGroup(expense.group)
+                if (group?.type === "income") {
+                    return sum + expense.money
+                } else {
+                    return sum - expense.money
+                }
+            },
             0,
         );
 
         dayData.total = totalMoney
+
+        if (state.data) {
+            const listExpense = toExpenseDayList(state)
+            const total = sum(listExpense, state.initBalance)
+            state.finalBalance = total
+        }
         dataExpense.save((JSON.stringify(state)))
     },
 };

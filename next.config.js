@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  env: {
+    TIME_ZONE: { timeZone: "Asia/Ho_Chi_Minh" },
+    LOCAL_CODE: "vi-VN",
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

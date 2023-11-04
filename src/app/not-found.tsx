@@ -12,8 +12,7 @@ function NotFound() {
         <span className="text-xl font-bold">Not Found</span>
         <Link href={"/"}>
           <button className="mt-4 rounded-full bg-c-green px-4 py-1 font-bold text-white">
-            Go Home
-            <FontAwesomeIcon icon={faArrowLeftLong} />
+            Go Home <FontAwesomeIcon icon={faArrowLeftLong} />
           </button>
         </Link>
       </div>

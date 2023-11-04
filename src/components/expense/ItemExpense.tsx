@@ -1,6 +1,7 @@
+import Money from "@/function/formatMoney";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faBowlFood } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 function ItemExpense({
   type = "expense",
@@ -18,11 +19,11 @@ function ItemExpense({
   color: `#${string}`;
 }) {
   return (
-    <div className="mb-5 flex items-center justify-between">
+    <li className="flex items-center justify-between">
       <div className="flex">
         <div
           style={{ backgroundColor: color }}
-          className="mr-2 grid aspect-square w-10 place-content-center rounded-full text-xl text-white opacity-90 backdrop-blur-sm"
+          className="mr-2 grid h-10 w-10 place-content-center rounded-full text-xl text-white opacity-90 backdrop-blur-sm"
         >
           <FontAwesomeIcon icon={icon} />
         </div>
@@ -32,12 +33,16 @@ function ItemExpense({
         </div>
       </div>
       <span
-        data-expense={type}
-        className="data-[expense='expense']:text-red-500 data-[expense='income']:text-green-500"
+        className={classNames({
+          "text-red-500": type === "expense",
+          "text-green-500": type === "income",
+          "!text-sky-700": value === 0,
+        })}
       >
-        {value}
+        {type === "expense" && value !== 0 && "-"}
+        {Money.format(value)}
       </span>
-    </div>
+    </li>
   );
 }
 

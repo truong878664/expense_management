@@ -57,7 +57,7 @@ function NotePage() {
       <div className="flex-1 px-4">
         <div
           ref={noteRef}
-          className="h-full min-h-[100px] outline-none"
+          className="h-full min-h-[100px] outline-none focus:outline-none"
           contentEditable
           placeholder="Thêm ghi chú..."
           onInput={onValidateSubmit}

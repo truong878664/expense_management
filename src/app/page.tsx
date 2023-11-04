@@ -3,14 +3,18 @@ import DetailExpense from "@/components/Home/DetailExpense";
 import Header from "@/components/Home/Header";
 import CDate from "@/function/CDate";
 import useQueryParams from "@/hooks/useQueryParams";
-
 export default function Home() {
   const params = useQueryParams();
-  const activeDate = params.get("date") || new CDate().today;
+  const dateNow = new Date().toLocaleDateString(
+    process.env.LOCAL_CODE,
+    process.env.TIME_ZONE as any,
+  );
+  const activeDate = params.get("date") || dateNow;
+
   return (
     <div className="flex h-full flex-col">
       <Header activeDate={activeDate} />
-      <div className="flex-1 overflow-auto">
+      <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
         <DetailExpense />
       </div>
     </div>
