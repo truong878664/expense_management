@@ -14,12 +14,11 @@ import Image from "next/image";
 import shortHandString from "@/function/shortHandString";
 import copy from "@/function/copy";
 import sum from "@/function/sum";
+import { to } from "@/function/toExpenseListDay";
 
 function DetailExpense() {
-  const dateNow = new Date().toLocaleDateString(
-    process.env.LOCAL_CODE,
-    process.env.TIME_ZONE as any,
-  );
+  const DateObject = new CDate();
+  const dateNow = DateObject.today;
   const params = useQueryParams();
   const activeDate = params.get("date") || dateNow;
   const [expenseDayList, setExpenseDayList] = useState<ExpenseDay>();
@@ -29,44 +28,60 @@ function DetailExpense() {
   const expense = useSelector(
     (state: { createSlice: Expense }) => state.createSlice,
   );
-  const [date, month, year] = activeDate.split("/");
+  const [dateString, monthString, yearString] = activeDate.split("/");
+  const date = +dateString;
+  const month = +monthString;
+  const year = +yearString;
+
   const totalDay = expenseDayList?.total || 0;
 
   useLayoutEffect(() => {
     const { data } = expense;
-    const expenseDayList: ExpenseDay = data?.[+year]?.[+month]?.[+date];
+    const expenseDayList: ExpenseDay = data?.[year]?.[month]?.[date];
     setExpenseDayList(expenseDayList);
     setBgEmptyBox(
       "#" + Math.floor(Math.random() * 16777215).toString(16) + "22",
     );
     console.log("Render expense list day: ", activeDate);
 
-    if (!expense.data) return;
-    const listExpense: ExpenseDay[] = [];
-    Object.keys(expense?.data)?.map((yearM: any) => {
-      if (Number(yearM) > Number(year)) return;
-      const yearList = expense.data[yearM];
-      if (!yearList) return;
-      Object.keys(yearList).map((monthM: any) => {
-        if (Number(monthM) > Number(month) && Number(yearM) === Number(year))
-          return;
-        const monthList = yearList[monthM];
-        if (!monthList) return;
-        Object.keys(monthList).map((dateM: any) => {
-          if (
-            Number(dateM) >= Number(date) &&
-            Number(monthM) === Number(month) &&
-            Number(yearM) === Number(year)
-          )
-            return;
+    // if (!expense.data) return;
+    // const listExpense: ExpenseDay[] = [];
+    // Object.keys(expense?.data)?.map((yearM: any) => {
+    //   if (Number(yearM) > Number(year)) return;
+    //   const yearList = expense.data[yearM];
+    //   if (!yearList) return;
+    //   Object.keys(yearList).map((monthM: any) => {
+    //     if (Number(monthM) > Number(month) && Number(yearM) === Number(year))
+    //       return;
+    //     const monthList = yearList[monthM];
+    //     if (!monthList) return;
+    //     Object.keys(monthList).map((dateM: any) => {
+    //       if (
+    //         Number(dateM) >= Number(date) &&
+    //         Number(monthM) === Number(month) &&
+    //         Number(yearM) === Number(year)
+    //       )
+    //         return;
 
-          if (!monthList[dateM]) return;
-          listExpense.push(copy(monthList[dateM]));
-          return listExpense;
-        });
+    //       if (!monthList[dateM]) return;
+    //       listExpense.push(copy(monthList[dateM]));
+    //       return listExpense;
+    //     });
+    //   });
+    // });
+    if (activeDate === "future") {
+      const listExpense = to(expense, {
+        type: "future",
+        date: DateObject.date,
+        month: DateObject.month,
+        year: DateObject.year,
       });
-    });
+      console.log(listExpense);
 
+      return;
+    }
+    const listExpense = to(expense, { type: "past", date, month, year });
+    if (!listExpense) return;
     const previousSum = sum(listExpense, expense.initBalance);
     setPreviousTotal(previousSum);
   }, [expense, activeDate]);
