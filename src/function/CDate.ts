@@ -35,9 +35,12 @@ export default class CDate {
         return this.full
     }
     setTime({ date, month, year }: { date: number | string, month: number | string, year: number | string }) {
-        date && this.#date.setDate(~~date);
-        month && this.#date.setMonth(~~month - 1);
-        year && this.#date.setFullYear(~~year);
+        const parseDate = Number(date)
+        const parseMonth = Number(month)
+        const parseYear = Number(year)
+        !isNaN(parseDate) && this.#date.setDate(parseDate);
+        !isNaN(parseMonth) && this.#date.setMonth(parseMonth - 1);
+        !isNaN(parseYear) && this.#date.setFullYear(parseYear);
         return this.full
     }
 

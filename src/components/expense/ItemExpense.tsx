@@ -18,6 +18,8 @@ function ItemExpense({
   icon: IconProp;
   color: `#${string}`;
 }) {
+  const isPercent = value.toString().indexOf("%") !== -1;
+
   return (
     <li className="flex items-center justify-between">
       <div className="flex">
@@ -39,8 +41,8 @@ function ItemExpense({
           "!text-sky-700": value === 0,
         })}
       >
-        {type === "expense" && value !== 0 && "-"}
-        {Money.format(value)}
+        {type === "expense" && value !== 0 && !isPercent && "-"}
+        {isPercent ? value : Money.format(value)}
       </span>
     </li>
   );

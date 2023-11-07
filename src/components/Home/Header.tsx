@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import { Expense } from "@/app/expenseSlice";
 import Money from "@/function/formatMoney";
 import MoreAction from "./MoreAction";
+import SelectWallet from "./SelectWallet";
 
 function Header({ activeDate }: { activeDate: string }) {
   const dateWrapperRef: RefObject<HTMLUListElement> = useRef(null);
@@ -61,19 +62,12 @@ function Header({ activeDate }: { activeDate: string }) {
           </div>
         </div>
         <div className="mt-2 grid place-content-center">
-          <button className="flex items-center justify-center rounded-lg bg-gray-200 px-2 py-1">
-            <FontAwesomeIcon
-              icon={faWallet}
-              className="rounded-full bg-slate-500/50 p-1 text-orange-400/90"
-            />
-            <span className="px-2 text-sm font-bold">Tiền mặt</span>
-            <FontAwesomeIcon icon={faCaretDown} />
-          </button>
+          <SelectWallet />
         </div>
         <div className="w-full border-b">
           <ul
             ref={dateWrapperRef}
-            className="flex w-full select-none gap-4 overflow-x-auto overflow-y-hidden whitespace-nowrap border-inherit px-6 py-1 text-sm scrollbar-none"
+            className="mt-2 flex w-full select-none gap-4 overflow-x-auto overflow-y-hidden whitespace-nowrap border-inherit px-6 py-1 text-sm scrollbar-none"
           >
             {dateList.map((date, index) => {
               return (

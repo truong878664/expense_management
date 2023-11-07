@@ -1,11 +1,9 @@
-// import { expenseList } from './groupExpenseList';
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import iconList from "./Icon";
 
 export const groupExpenseList = [
     {
         group: "Chi tiêu hàng tháng",
-        data: ["gr_99452bf339014", "gr_2212cfd08bfda", "gr_a2a1be33ec0f6"],
+        data: ["gr_99452bf339014", "gr_2212cfd08bfda", "gr_a2a1be33ec0f6", "gr_b9ccd4fasdcb4"],
     },
     {
         group: "Chi tiêu cần thiết",
@@ -51,6 +49,13 @@ export const expenseList: {
             color: "#F55050",
             type: "expense"
 
+        },
+        {
+            id: "gr_b9ccd4fasdcb4",
+            title: "Vui chơi",
+            icon: "icon_a86a8bd5bd74g",
+            color: "#FF9209",
+            type: "income"
         },
         {
             id: "gr_51de9ba2db546",
@@ -111,6 +116,7 @@ export const expenseList: {
             color: "#C70039",
             type: "income"
         },
+
     ];
 
 export const findExpenseGroup = (id: string | number) => {

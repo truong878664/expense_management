@@ -36,6 +36,7 @@ import {
     faMoneyBill,
     faBoxesStacked,
     faCreditCard,
+    faBowlingBall,
 } from "@fortawesome/free-solid-svg-icons";
 const iconList: { id: string; name: string; icon: IconProp }[] = [
     { id: "icon_3d2b1059968c5", name: "stroopwafel", icon: faStroopwafel },
@@ -74,5 +75,7 @@ const iconList: { id: string; name: string; icon: IconProp }[] = [
     { id: "icon_1224a12d6beb7", name: "money-bill", icon: faMoneyBill },
     { id: "icon_1224a12d6beb8", name: "boxes-stacked", icon: faBoxesStacked },
     { id: "icon_1224a12d6beb9", name: "credit-card", icon: faCreditCard },
+    { id: "icon_a86a8bd5bd74g", name: "bowling-ball", icon: faBowlingBall },
 ];
+
 export default iconList;

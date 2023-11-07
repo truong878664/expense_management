@@ -14,7 +14,9 @@ import {
   faAngleRight,
   faAngleUp,
   faCaretDown,
+  faCircleXmark,
   faStroopwafel,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -36,6 +38,10 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   );
   const [moneyDebounce, setMoneyDebounce] = useDebounce<string>();
   const [dateSelect, setDateSelect] = useState<ReactElement | null>(null);
+  const [disableSubmit, setDisableSubmit] = useState(true);
+
+  const validMoney = !!Number(money.toString().replaceAll(",", ""));
+
   const onchange = (e: any) => {
     const valueInput = Money.formatNumber(e.target.value);
     setMoney(valueInput);
@@ -63,13 +69,20 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
         console.log("Dispatch money: ", moneyExpense);
       })();
   };
+
   const groupSelector = findExpenseGroup(expense.group);
   const onSelectDate = () => {
     setDateSelect(<DateSelect handleRemove={setDateSelect} />);
   };
+
   useEffect(() => {
     dispatch(extend({ id: uid("ex") }));
   }, []);
+
+  useEffect(() => {
+    setDisableSubmit(!(expense.group && validMoney));
+  }, [expense.group, money]);
+
   useEffect(dispatchMoney, [moneyDebounce]);
 
   return (
@@ -77,7 +90,13 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
       <div className="sticky top-0 mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
         <button onClick={handleDismiss}>Hủy</button>
         <span>Thêm giao dịch</span>
-        <button className="disabled:opacity-50" onClick={onSubmit}>
+        <button
+          disabled={disableSubmit}
+          className="disabled:pointer-events-none disabled:opacity-50"
+          onClick={() => {
+            !disableSubmit && onSubmit();
+          }}
+        >
           Lưu
         </button>
       </div>
@@ -90,16 +109,27 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
           </div>
           <div className="flex flex-1 flex-col border-b">
             <span className="text-xs">Số tiền</span>
-
-            <input
-              type="text"
-              value={money}
-              className={classNames(
-                "w-full bg-transparent text-2xl focus:outline-none",
-                { "text-gray-500": money === "0" },
+            <div className="relative">
+              <input
+                type="text"
+                value={money}
+                className={classNames(
+                  "w-full bg-transparent text-2xl  focus:outline-none",
+                  { "text-gray-500": !validMoney },
+                )}
+                onChange={onchange}
+              />
+              {validMoney && (
+                <button
+                  onClick={() => {
+                    setMoney(0);
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 "
+                >
+                  <FontAwesomeIcon icon={faCircleXmark} />
+                </button>
               )}
-              onChange={onchange}
-            />
+            </div>
           </div>
         </div>
         <div className="flex gap-4">
