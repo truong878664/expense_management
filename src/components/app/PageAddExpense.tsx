@@ -56,6 +56,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
     const payloadExpense: ExpensePayload = {
       ...expense,
     };
+
     dispatch(add(payloadExpense));
     handleResetExpense();
     handleDismiss();

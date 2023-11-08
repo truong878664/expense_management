@@ -3,11 +3,11 @@ import { Expense, ExpenseDay, ExpenseList } from "@/app/expenseSlice";
 import CDate from "@/function/CDate";
 import useQueryParams from "@/hooks/useQueryParams";
 import { memo, useEffect, useLayoutEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import sum from "@/function/sum";
 import toExpenseListDay from "@/function/toExpenseListDay";
 import Statistic from "./Statistics";
 import ListExpenseDay from "./ListExpenseDay";
+import expenseSelector from "@/app/expenseSelector";
 
 function DetailExpense() {
   const DateObject = new CDate();
@@ -18,10 +18,8 @@ function DetailExpense() {
   const [pastTotal, setPastTotal] = useState(0);
   const [totalSelect, setTotalSelect] = useState(0);
 
-  const expense = useSelector(
-    (state: { createSlice: Expense }) => state.createSlice,
-  );
-
+  const expenseStore = expenseSelector();
+  const expense = expenseStore.get();
   const [dateString, monthString, yearString] = activeDate.split("/");
 
   const { date, day, month, year } = new CDate().setTime({

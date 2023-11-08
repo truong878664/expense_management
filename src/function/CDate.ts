@@ -34,7 +34,7 @@ export default class CDate {
         this.#date.setDate(this.#date.getDate() + date);
         return this.full
     }
-    setTime({ date, month, year }: { date: number | string, month: number | string, year: number | string }) {
+    setTime({ date, month, year }: { date?: number | string, month?: number | string, year?: number | string }) {
         const parseDate = Number(date)
         const parseMonth = Number(month)
         const parseYear = Number(year)

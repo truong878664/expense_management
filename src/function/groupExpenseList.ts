@@ -55,7 +55,7 @@ export const expenseList: {
             title: "Vui chơi",
             icon: "icon_a86a8bd5bd74g",
             color: "#FF9209",
-            type: "income"
+            type: "expense"
         },
         {
             id: "gr_51de9ba2db546",

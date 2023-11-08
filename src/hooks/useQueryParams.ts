@@ -12,10 +12,12 @@ function useQueryParams() {
         getAll() {
             return params;
         },
-        paramsString() {
-            const keyParams = Object.keys(params);
+        paramsString(moreParams: { [key: string]: string } = {}) {
+            const newParamsList = { ...params, ...moreParams }
+
+            const keyParams = Object.keys(newParamsList);
             const paramStringArray = keyParams.map((param) => {
-                return param + "=" + params[param];
+                return param + "=" + newParamsList[param];
             });
             return keyParams.length ? "?" + paramStringArray.join("&") : "";
         },

@@ -11,7 +11,7 @@ type ExpenseData = {
 type ExpenseYear = {
     [month: number]: ExpenseMonth;
 };
-type ExpenseMonth = {
+export type ExpenseMonth = {
     [date: number]: ExpenseDay;
 };
 export type ExpenseDay = {
@@ -93,6 +93,7 @@ const expenseSlice = createSlice({
     initialState,
     reducers: actions,
 });
+
 
 export const { add } = expenseSlice.actions;
 export default expenseSlice.reducer;
