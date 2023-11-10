@@ -1,7 +1,6 @@
 "use client";
 import DetailExpense from "@/components/Home/DetailExpense";
 import Header from "@/components/Home/Header";
-import CDate from "@/function/CDate";
 import useQueryParams from "@/hooks/useQueryParams";
 export default function Home() {
   const params = useQueryParams();

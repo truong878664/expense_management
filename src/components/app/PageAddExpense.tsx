@@ -27,6 +27,7 @@ import useDebounce from "@/hooks/useDebounce";
 import classNames from "classnames";
 import shortHandString from "@/function/shortHandString";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
+import useQueryParams from "@/hooks/useQueryParams";
 
 function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const dispatch = useDispatch();
@@ -147,7 +148,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
           </div>
           <Link
             onClick={dispatchMoney}
-            href={"/add-expense/group"}
+            href={"/add-expense/group" + useQueryParams().paramsString()}
             className="flex flex-1 items-center justify-between border-b pr-2"
           >
             <span
@@ -166,7 +167,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
           </div>
           <Link
             onClick={dispatchMoney}
-            href={"/add-expense/note"}
+            href={"/add-expense/note" + useQueryParams().paramsString()}
             className="flex flex-1 items-center justify-between border-b pr-2"
           >
             <span

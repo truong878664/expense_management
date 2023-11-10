@@ -11,7 +11,7 @@ type DateReturnMonth = {
     totalAll: number;
 };
 
-export type ExpenseSelector = {
+export type UseExpenseSelector = {
     get: () => Expense;
     getMonth: ({
         year,
@@ -33,7 +33,7 @@ export type ExpenseSelector = {
     toExpenseListAll: () => ExpenseList[]
 };
 
-function expenseSelector(): ExpenseSelector {
+function useExpenseSelector(): UseExpenseSelector {
     const expense = useSelector(
         (state: { createSlice: Expense }) => state.createSlice,
     );
@@ -155,4 +155,4 @@ function expenseSelector(): ExpenseSelector {
     };
 }
 
-export default expenseSelector;
+export default useExpenseSelector;

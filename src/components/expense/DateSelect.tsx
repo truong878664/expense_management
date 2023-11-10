@@ -26,10 +26,10 @@ function DateSelect({ handleRemove }: DateSelect) {
 
   const onDispatchDate: MouseEventHandler = (e) => {
     const { minusDate } = (e.target as HTMLButtonElement).dataset;
-    const { date, month, year } = new CustomDate().calculateDay(
+    const { date, month, year, day } = new CustomDate().calculateDay(
       Number(minusDate),
     );
-    dispatch(extend({ date, month, year }));
+    dispatch(extend({ date, month, year, day }));
     removeButtonRef.current?.click();
   };
 

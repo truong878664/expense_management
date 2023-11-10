@@ -22,14 +22,13 @@ import Money from "@/function/formatMoney";
 import MoreAction from "./MoreAction";
 import SelectWallet from "./SelectWallet";
 import useQueryParams from "@/hooks/useQueryParams";
+import useExpenseSelector from "@/app/useExpenseSelector";
 
 function Header({ activeDate }: { activeDate: string }) {
   const params = useQueryParams();
   const dateWrapperRef: RefObject<HTMLUListElement> = useRef(null);
   const [money, setMoney] = useState<string | 0>("0 ₫");
-  const expense = useSelector(
-    (state: { createSlice: Expense }) => state.createSlice,
-  );
+  const expense = useExpenseSelector().get();
 
   const firstRenderHeaderRef = useRef(true);
   useLayoutEffect(() => {
@@ -67,7 +66,7 @@ function Header({ activeDate }: { activeDate: string }) {
           </div>
         </div>
         <div className="mt-2 grid place-content-center">
-          <SelectWallet />
+          <SelectWallet currentWallet={expense.wallet} />
         </div>
         <div className="w-full border-b">
           <ul

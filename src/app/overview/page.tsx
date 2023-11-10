@@ -4,10 +4,10 @@ import RecentTransaction from "@/components/Overview/RecentTransaction";
 import ReportMoney from "@/components/Overview/ReportMoney";
 import { Expense } from "../expenseSlice";
 import { useEffect, useState } from "react";
-import expenseSelector from "../expenseSelector";
+import useExpenseSelector from "../useExpenseSelector";
 
 function OverView() {
-  const expenseStore = expenseSelector();
+  const expenseStore = useExpenseSelector();
 
   const [expenseHydrated, setExpenseHydrated] = useState<Expense>();
 

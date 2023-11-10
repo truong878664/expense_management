@@ -3,14 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import ItemExpense from "../expense/ItemExpense";
 import CDate from "@/function/CDate";
-import { Expense, ExpenseList } from "@/app/expenseSlice";
-import { ExpenseSelector } from "@/app/expenseSelector";
+import { ExpenseList } from "@/app/expenseSlice";
 import Money from "@/function/formatMoney";
 import copy from "@/function/copy";
 import { findExpenseGroup } from "@/function/groupExpenseList";
+import { UseExpenseSelector } from "@/app/useExpenseSelector";
 
-function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
+function ReportMoney({ expenseStore }: { expenseStore: UseExpenseSelector }) {
   const [reportPeriod, setReportPeriod] = useState<"week" | "month">("month");
+
   const periodTransToVietNam = {
     week: "Tuần",
     month: "Tháng",
@@ -38,7 +39,6 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
     };
     const expenseMonthPastData = expenseStore.getPeriod(periods[period].past);
     const expenseMonthData = expenseStore.getPeriod(periods[period].now);
-    console.log(DateObject.dateLastWeek);
 
     if (expenseMonthPastData) {
       setDataReportPast(expenseMonthPastData);
@@ -70,11 +70,9 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
   const percentComparedBefore = Math.floor(
     (Math.abs(sumReport - sumReportPast) / sumReportPast) * 100,
   );
-
   const maxChart = Math.round(maxExpenseTotal / 1000);
   const valueShowMaxChart =
     maxChart > 1000 ? Math.ceil(maxChart / 1000) : Math.ceil(maxChart);
-  console.log(valueShowMaxChart);
 
   return (
     <section className="mt-5">
@@ -137,7 +135,12 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
                     <FontAwesomeIcon icon={faArrowDown} />
                   </span>
                   <span>
-                    {isNaN(percentComparedBefore) ? 0 : percentComparedBefore}%
+                    {isNaN(percentComparedBefore)
+                      ? 0
+                      : !isFinite(percentComparedBefore)
+                      ? Money.format(sumReport)
+                      : percentComparedBefore}
+                    {isFinite(percentComparedBefore) && "%"}
                   </span>
                 </span>
               </div>
@@ -148,22 +151,32 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
                 <button
                   style={{
                     height:
-                      (sumReportPast / Math.ceil(maxExpenseTotal)) * 100 + "%",
+                      (maxChart > 1000
+                        ? (sumReportPast / 1000000 / valueShowMaxChart) * 100
+                        : (sumReportPast / 1000 / valueShowMaxChart) * 100) +
+                      "%",
                   }}
                   className="w-10 rounded-t-md bg-red-400 opacity-50 transition-all duration-300 [&.active]:opacity-100"
                 ></button>
                 <button
                   style={{
                     height:
-                      (sumReport / Math.ceil(maxExpenseTotal)) * 100 + "%",
+                      (maxChart > 1000
+                        ? (sumReport / 1000000 / valueShowMaxChart) * 100
+                        : (sumReport / 1000 / valueShowMaxChart) * 100) + "%",
                   }}
                   className="active w-10 rounded-t-md bg-red-400 opacity-50 transition-all duration-300 [&.active]:opacity-100"
-                ></button>
+                >
+                  {/* {sumReport / 1000 + "|" + valueShowMaxChart} */}
+                </button>
                 <div className="absolute left-full top-0 flex h-full flex-col items-center justify-between text-xs">
                   <span>
                     {valueShowMaxChart}
                     {maxChart > 1000 ? "M" : "k"}
                   </span>
+                  <span className="font-thin">-</span>
+                  <span>-</span>
+                  <span className="font-thin">-</span>
                   <span>0</span>
                 </div>
                 <div className="absolute left-0 top-full flex w-full justify-evenly text-xs">
@@ -183,22 +196,28 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
                 </span>
               </span>
               <ul className="mt-2 flex flex-col gap-4">
-                {mostExpense.map((expense: ExpenseList, index) => {
-                  const group = findExpenseGroup(expense.group);
-                  return (
-                    <ItemExpense
-                      key={index}
-                      type={group?.type || "expense"}
-                      kind={group?.title || ""}
-                      describe={Money.format(expense.money).toString()}
-                      value={
-                        Math.floor((expense.money / sumReport) * 100) + "%"
-                      }
-                      icon={group?.iconFa?.icon || faPaw}
-                      color={(group?.color as `#${string}`) || "#F875AA"}
-                    />
-                  );
-                })}
+                {Boolean(mostExpense.length) !== false ? (
+                  mostExpense.map((expense: ExpenseList, index) => {
+                    const group = findExpenseGroup(expense.group);
+                    return (
+                      <ItemExpense
+                        key={index}
+                        type={group?.type || "expense"}
+                        kind={group?.title || ""}
+                        describe={Money.format(expense.money).toString()}
+                        value={
+                          Math.floor((expense.money / sumReport) * 100) + "%"
+                        }
+                        icon={group?.iconFa?.icon || faPaw}
+                        color={(group?.color as `#${string}`) || "#F875AA"}
+                      />
+                    );
+                  })
+                ) : (
+                  <span className="w-full text-center text-slate-600">
+                    Không có giao dịch
+                  </span>
+                )}
               </ul>
             </div>
             {/* end spend the most */}

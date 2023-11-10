@@ -7,7 +7,7 @@ import sum from "@/function/sum";
 import toExpenseListDay from "@/function/toExpenseListDay";
 import Statistic from "./Statistics";
 import ListExpenseDay from "./ListExpenseDay";
-import expenseSelector from "@/app/expenseSelector";
+import useExpenseSelector from "@/app/useExpenseSelector";
 
 function DetailExpense() {
   const DateObject = new CDate();
@@ -18,7 +18,7 @@ function DetailExpense() {
   const [pastTotal, setPastTotal] = useState(0);
   const [totalSelect, setTotalSelect] = useState(0);
 
-  const expenseStore = expenseSelector();
+  const expenseStore = useExpenseSelector();
   const expense = expenseStore.get();
   const [dateString, monthString, yearString] = activeDate.split("/");
 
