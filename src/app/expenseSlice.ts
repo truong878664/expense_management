@@ -27,6 +27,11 @@ export type ExpenseList = {
     group: number | string;
     describe?: string;
     money: number;
+    date: number;
+    month: number;
+    year: number;
+    day: string;
+    timestamp: number
 };
 export type Expense = {
     initBalance: number;
@@ -42,12 +47,14 @@ export type ExpensePayload = ExpenseList & {
     month: number;
     year: number;
     day: string;
+    timestamp: number;
 };
 const dataExpense = new DataExpense();
 const initialState: Expense = dataExpense.get;
 const actions = {
     add(state: Expense, action: PayloadAction<ExpensePayload>) {
-        const { date, month, year, day, ...expenseItem } = action.payload;
+        const { ...expenseItem } = action.payload;
+        const { date, month, year, day } = expenseItem
         const data = (state.data ||= {});
         const yearData = (data[year] ||= {});
         const monthData = (yearData[month] ||= {});

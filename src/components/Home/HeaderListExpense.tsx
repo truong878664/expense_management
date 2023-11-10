@@ -2,11 +2,11 @@ import Money from "@/function/formatMoney";
 import classNames from "classnames";
 
 type HeaderListExpense = {
-  date: number;
+  date: number | string;
   month: number;
   year: number;
   totalDay?: number;
-  day: string;
+  day?: string;
 };
 function HeaderListExpense({
   date,
@@ -16,7 +16,8 @@ function HeaderListExpense({
   day,
 }: HeaderListExpense) {
   const totalSelect = totalDay || 0;
-  if (!(date || month || year || day)) return <></>;
+
+  if (!(date || month || year || day) || date === "future") return <></>;
   return (
     <div className="sticky top-0 z-1 flex items-center justify-between bg-gray-100 p-2 shadow shadow-gray-100">
       <div className="flex">

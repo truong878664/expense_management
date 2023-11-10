@@ -1,5 +1,11 @@
 import CDate from "./CDate";
 
+type date = number;
+type month = number;
+type year = number
+type valueDate = `${date}/${month}/${year}` | "future"
+
+
 function createDateList() {
     const optionFormatTime = [
         process.env.LOCAL_CODE,
@@ -11,7 +17,7 @@ function createDateList() {
     const todayValue = today.toLocaleDateString(...optionFormatTime);
     otherDate.setDate(otherDate.getDate() - 1);
     const yesterdayValue = otherDate.toLocaleDateString(...optionFormatTime);
-    const dateList: { value: string; title: string }[] = [
+    const dateList: { value: valueDate; title: string }[] = [
         { value: "future", title: "Tương lai" },
     ];
     today.setDate(today.getDate() + 1);
@@ -28,7 +34,7 @@ function createDateList() {
                 ? "Hôm qua"
                 : today.toLocaleDateString(...optionFormatTime);
         dateList.unshift({
-            value: today.toLocaleDateString(...optionFormatTime),
+            value: today.toLocaleDateString(...optionFormatTime) as valueDate,
             title,
         });
     }

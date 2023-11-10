@@ -21,13 +21,16 @@ import { Expense } from "@/app/expenseSlice";
 import Money from "@/function/formatMoney";
 import MoreAction from "./MoreAction";
 import SelectWallet from "./SelectWallet";
+import useQueryParams from "@/hooks/useQueryParams";
 
 function Header({ activeDate }: { activeDate: string }) {
+  const params = useQueryParams();
   const dateWrapperRef: RefObject<HTMLUListElement> = useRef(null);
   const [money, setMoney] = useState<string | 0>("0 ₫");
   const expense = useSelector(
     (state: { createSlice: Expense }) => state.createSlice,
   );
+
   const firstRenderHeaderRef = useRef(true);
   useLayoutEffect(() => {
     let behavior: "smooth" | "auto" = "smooth";
@@ -58,7 +61,9 @@ function Header({ activeDate }: { activeDate: string }) {
         <div className="flex justify-center">
           <div className="flex flex-col text-center">
             <span className="text-sm font-bold">Số dư</span>
-            <span className="font-bold">{money}</span>
+            <span className="font-bold">
+              {params.get("money") === "hidden" ? "*********" : money}
+            </span>
           </div>
         </div>
         <div className="mt-2 grid place-content-center">

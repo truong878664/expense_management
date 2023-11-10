@@ -13,7 +13,7 @@ function OverView() {
 
   useEffect(() => {
     setExpenseHydrated(expenseStore.get());
-  }, []);
+  }, [expenseStore.get()]);
   return (
     <section className="h-full overflow-y-auto p-4">
       <HeaderOverview
@@ -35,7 +35,7 @@ function OverView() {
           Nâng cấp ngay
         </button>
       </section>
-      <RecentTransaction />
+      <RecentTransaction expenseStore={expenseStore} />
     </section>
   );
 }

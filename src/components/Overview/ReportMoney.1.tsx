@@ -3,13 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import ItemExpense from "../expense/ItemExpense";
 import CDate from "@/function/CDate";
-import { Expense, ExpenseList } from "@/app/expenseSlice";
+import { ExpenseList } from "@/app/expenseSlice";
 import { ExpenseSelector } from "@/app/expenseSelector";
 import Money from "@/function/formatMoney";
 import copy from "@/function/copy";
 import { findExpenseGroup } from "@/function/groupExpenseList";
 
-function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
+export function ReportMoney({
+  expenseStore,
+}: {
+  expenseStore: ExpenseSelector;
+}) {
   const [reportPeriod, setReportPeriod] = useState<"week" | "month">("month");
   const periodTransToVietNam = {
     week: "Tuần",
@@ -17,6 +21,7 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
   };
 
   const DateObject = new CDate();
+  const DateObjectPast = new CDate().setTime({ month: DateObject.month - 1 });
 
   const [dataReportPast, setDataReportPast] = useState<ExpenseList[]>([]);
   const [dataReport, setDataReport] = useState<ExpenseList[]>([]);
@@ -25,36 +30,27 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
   const [sumReport, setSumReport] = useState<number>(0);
   const [mostExpense, setMostExpense] = useState([]);
 
-  const onSetDataReport = (period: "week" | "month") => {
-    const periods = {
-      week: {
-        now: DateObject.dateWeek,
-        past: DateObject.dateLastWeek,
-      },
-      month: {
-        now: DateObject.dateMonth,
-        past: DateObject.dateLastMonth,
-      },
-    };
-    const expenseMonthPastData = expenseStore.getPeriod(periods[period].past);
-    const expenseMonthData = expenseStore.getPeriod(periods[period].now);
-    console.log(DateObject.dateLastWeek);
-
-    if (expenseMonthPastData) {
-      setDataReportPast(expenseMonthPastData);
-      setSumReportPast(expenseStore.total(expenseMonthPastData));
-    }
-    if (expenseMonthData) {
-      setDataReport(expenseMonthData);
-      setSumReport(expenseStore.total(expenseMonthData));
-    }
-  };
-
   useEffect(() => {
-    setReportPeriod("month");
-    onSetDataReport("month");
+    const expenseMonthPastData = expenseStore.getMonth({
+      month: DateObjectPast.month,
+      year: DateObjectPast.year,
+    });
+    const expenseMonthData = expenseStore.getMonth({
+      month: DateObject.month,
+      year: DateObject.year,
+    });
+
+    if (expenseMonthPastData?.list) {
+      setDataReportPast(expenseMonthPastData.list);
+      setSumReportPast(expenseStore.total(expenseMonthPastData.list));
+    }
+    if (expenseMonthData?.list) {
+      setDataReport(expenseMonthData.list);
+      setSumReport(expenseStore.total(expenseMonthData.list));
+    }
   }, [expenseStore.get()]);
 
+  // console.log("data period", expenseStore.getPeriod(DateObject.week));
   useEffect(() => {
     setMostExpense(
       copy(dataReport)
@@ -70,11 +66,6 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
   const percentComparedBefore = Math.floor(
     (Math.abs(sumReport - sumReportPast) / sumReportPast) * 100,
   );
-
-  const maxChart = Math.round(maxExpenseTotal / 1000);
-  const valueShowMaxChart =
-    maxChart > 1000 ? Math.ceil(maxChart / 1000) : Math.ceil(maxChart);
-  console.log(valueShowMaxChart);
 
   return (
     <section className="mt-5">
@@ -93,7 +84,6 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
           <button
             onClick={() => {
               setReportPeriod("week");
-              onSetDataReport("week");
             }}
             className="active z-1 w-1/2 cursor-pointer py-0.5 text-gray-500 group-data-[time-active='week']:text-gray-800"
           >
@@ -102,7 +92,6 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
           <button
             onClick={() => {
               setReportPeriod("month");
-              onSetDataReport("month");
             }}
             className="z-1 w-1/2 cursor-pointer py-0.5 text-gray-500 group-data-[time-active='month']:text-gray-800"
           >
@@ -147,23 +136,16 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
               <div className="relative flex h-full w-3/5 items-end justify-evenly border-b">
                 <button
                   style={{
-                    height:
-                      (sumReportPast / Math.ceil(maxExpenseTotal)) * 100 + "%",
+                    height: (sumReportPast / maxExpenseTotal) * 100 + "%",
                   }}
                   className="w-10 rounded-t-md bg-red-400 opacity-50 transition-all duration-300 [&.active]:opacity-100"
                 ></button>
                 <button
-                  style={{
-                    height:
-                      (sumReport / Math.ceil(maxExpenseTotal)) * 100 + "%",
-                  }}
+                  style={{ height: (sumReport / maxExpenseTotal) * 100 + "%" }}
                   className="active w-10 rounded-t-md bg-red-400 opacity-50 transition-all duration-300 [&.active]:opacity-100"
                 ></button>
                 <div className="absolute left-full top-0 flex h-full flex-col items-center justify-between text-xs">
-                  <span>
-                    {valueShowMaxChart}
-                    {maxChart > 1000 ? "M" : "k"}
-                  </span>
+                  <span>{Math.ceil(maxExpenseTotal / 1000000)}M</span>
                   <span>0</span>
                 </div>
                 <div className="absolute left-0 top-full flex w-full justify-evenly text-xs">
@@ -208,5 +190,3 @@ function ReportMoney({ expenseStore }: { expenseStore: ExpenseSelector }) {
     </section>
   );
 }
-
-export default ReportMoney;

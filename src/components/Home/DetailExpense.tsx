@@ -88,7 +88,12 @@ function DetailExpense() {
             );
           })
         ) : (
-          <ListExpenseDay date={date} month={month} year={year} day={day} />
+          <ListExpenseDay
+            date={dateString}
+            month={month}
+            year={year}
+            day={day}
+          />
         )}
       </div>
     </>

@@ -10,7 +10,6 @@ export default function Home() {
     process.env.TIME_ZONE as any,
   );
   const activeDate = params.get("date") || dateNow;
-
   return (
     <div className="flex h-full flex-col">
       <Header activeDate={activeDate} />

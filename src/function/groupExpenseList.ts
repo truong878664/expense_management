@@ -1,4 +1,5 @@
 import iconList from "./Icon";
+export type TypeExpense = "income" | "expense"
 
 export const groupExpenseList = [
     {
@@ -25,7 +26,7 @@ export const expenseList: {
     title: string,
     icon: string,
     color: string,
-    type: "income" | "expense",
+    type: TypeExpense
 }[] = [
         {
             id: "gr_99452bf339014",

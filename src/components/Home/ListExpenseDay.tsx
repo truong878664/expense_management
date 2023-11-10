@@ -8,10 +8,10 @@ import EmptyBox from "./EmptyBox";
 import classNames from "classnames";
 
 type ListExpenseDay = {
-  date: number;
+  date: number | string;
   month: number;
   year: number;
-  day: string;
+  day?: string;
   totalDay?: number;
   expenseDay?: ExpenseList[];
 };
