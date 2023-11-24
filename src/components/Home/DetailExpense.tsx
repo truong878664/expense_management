@@ -1,5 +1,6 @@
 "use client";
-import { Expense, ExpenseDay, ExpenseList } from "@/app/expenseSlice";
+
+import { ExpenseDay } from "@/app/expenseSlice";
 import CDate from "@/function/CDate";
 import useQueryParams from "@/hooks/useQueryParams";
 import { memo, useEffect, useLayoutEffect, useState } from "react";
@@ -69,12 +70,17 @@ function DetailExpense() {
     }, 0);
     setTotalSelect(total || 0);
   }, [expenseSelect]);
+
+  const isEmptyExpenseDay = Boolean(
+    expenseSelect?.filter((item) => item.expenseList.length)?.length,
+  );
+
   return (
     <>
       <Statistic pastTotal={pastTotal} totalSelect={totalSelect} />
       <div className="my-2 mb-10 mt-6 flex flex-1 flex-col gap-2">
-        {expenseSelect ? (
-          expenseSelect.map((expenseDayList, index) => {
+        {isEmptyExpenseDay ? (
+          expenseSelect?.map((expenseDayList, index) => {
             return (
               <ListExpenseDay
                 key={index}
@@ -84,6 +90,7 @@ function DetailExpense() {
                 day={expenseDayList.day}
                 totalDay={expenseDayList.total}
                 expenseDay={expenseDayList.expenseList}
+                activeDate={activeDate}
               />
             );
           })

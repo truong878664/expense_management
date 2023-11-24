@@ -213,7 +213,7 @@ function OptionSelectDate({
   return (
     <div
       ref={optionSelectDateWrapperRef}
-      className="fixed bottom-0 left-0 right-0 top-0 z-20 flex flex-col items-center overflow-hidden p-4 backdrop-blur-sm"
+      className="fixed bottom-0 left-0 right-0 top-0 z-20 flex flex-col items-center overflow-hidden px-2 py-4 backdrop-blur-md"
     >
       <div
         ref={dayWrapperRef}
@@ -276,16 +276,18 @@ function OptionSelectDate({
           </div>
         </div>
       </div>
-      <Button
-        onClick={onSubmit}
-        className={classNames(
-          "[&.disable]:pointer-events-none [&.disable]:text-gray-400",
-          { disable: !loading },
-        )}
-      >
-        Chọn
-      </Button>
-      <Button onClick={() => onRemove()}>Hủy</Button>
+      <div className="w-full">
+        <Button
+          onClick={onSubmit}
+          className={classNames(
+            "[&.disable]:pointer-events-none [&.disable]:text-gray-400",
+            { disable: !loading },
+          )}
+        >
+          Chọn
+        </Button>
+        <Button onClick={() => onRemove()}>Hủy</Button>
+      </div>
     </div>
   );
 }

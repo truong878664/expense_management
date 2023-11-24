@@ -35,7 +35,7 @@ function LayoutAddExpense({ children }: { children: React.ReactNode }) {
         data-active=""
         id="add-expense-wrapper"
         ref={addExpenseWrapperRef}
-        className="relative h-[calc(100%_-_56px)] w-full translate-y-full overflow-auto rounded-t-3xl border-t bg-slate-100 py-2 scrollbar-none"
+        className="relative h-[calc(100%_-_56px)] w-full translate-y-full overflow-auto rounded-t-3xl bg-slate-100 py-2 scrollbar-none"
       >
         <LayoutAddExpenseContext.Provider value={{ onDismiss }}>
           {children}

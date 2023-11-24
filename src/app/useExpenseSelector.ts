@@ -13,6 +13,7 @@ type DateReturnMonth = {
 
 export type UseExpenseSelector = {
     get: () => Expense;
+    getById: (id: string | number) => ExpenseList | undefined;
     getMonth: ({
         year,
         month,
@@ -29,8 +30,15 @@ export type UseExpenseSelector = {
     }) => undefined | DateReturnMonth;
     toExpenseList: (expenseMonth: ExpenseMonth) => DateReturnMonth;
     total: (expenseList: ExpenseList[]) => number;
-    getPeriod: ({ begin, end }: { begin: Date; end: Date }) => undefined | ExpenseList[];
-    toExpenseListAll: () => ExpenseList[]
+    getPeriod: ({
+        begin,
+        end,
+    }: {
+        begin: Date;
+        end: Date;
+    }) => undefined | ExpenseList[];
+    toExpenseListAll: () => ExpenseList[] | undefined;
+    toAllDataList: () => ExpenseList[] | undefined;
 };
 
 function useExpenseSelector(): UseExpenseSelector {
@@ -40,6 +48,10 @@ function useExpenseSelector(): UseExpenseSelector {
     return {
         get() {
             return expense;
+        },
+        getById(id) {
+            const listExpenseAll = this.toAllDataList()
+            return listExpenseAll?.find(expense => expense.id === id)
         },
         getMonth({ month, year }) {
             const data = (expense.data ||= {});
@@ -53,10 +65,13 @@ function useExpenseSelector(): UseExpenseSelector {
             return undefined;
         },
         getPeriod({ begin, end }) {
-            const expenseListAll = this.toExpenseListAll()
+            const expenseListAll = this.toExpenseListAll();
             return copy(expenseListAll).filter((expense: ExpenseList) => {
-                return expense.timestamp >= begin.timeStamp && expense.timestamp <= end.timeStamp
-            })
+                return (
+                    expense.timestamp >= begin.timeStamp &&
+                    expense.timestamp <= end.timeStamp
+                );
+            });
         },
 
         toExpenseList(expenseMonth) {
@@ -87,71 +102,36 @@ function useExpenseSelector(): UseExpenseSelector {
             }, 0);
         },
         toExpenseListAll() {
-            const expenseList: ExpenseList[] = []
+            const expenseList: ExpenseList[] = [];
             Object.keys(expense.data)?.map((yearM) => {
-                const parseYear = Number(yearM)
-                const dataYear = expense.data[parseYear]
-                Object.keys(dataYear).map(monthM => {
-                    const parseMonth = Number(monthM)
-                    const dataMonth = dataYear[parseMonth]
-                    expenseList.push(...this.toExpenseList(dataMonth).list)
-                    return expenseList
-                })
-                return expenseList
-            })
-            return expenseList
+                const parseYear = Number(yearM);
+                const dataYear = expense.data[parseYear];
+                Object.keys(dataYear).map((monthM) => {
+                    const parseMonth = Number(monthM);
+                    const dataMonth = dataYear[parseMonth];
+                    expenseList.push(...this.toExpenseList(dataMonth).list);
+                    return expenseList;
+                });
+                return expenseList;
+            });
+            return expenseList;
+        },
+        toAllDataList() {
+            const expenseList: ExpenseList[] = [];
+            for (const yearM of Object.keys(expense.data)) {
+                const parseYear = Number(yearM);
+                const dataYear = expense.data[parseYear];
+                for (const monthM of Object.keys(dataYear)) {
+                    const parseMonth = Number(monthM);
+                    const dataMonth = dataYear[parseMonth];
+                    for (const dateM of Object.keys(dataMonth)) {
+                        const parseDate = Number(dateM);
+                        expenseList.push(...dataMonth[parseDate].expenseList);
+                    }
+                }
+            }
+            return expenseList;
         }
-
-
-        // getPeriod({ begin, end }) {
-        //     const { date: dateBegin, month: monthBegin, year: yearBegin } = begin;
-        //     const { date: dateEnd, month: monthEnd, year: yearEnd } = end;
-
-        //     const listExpense: ExpenseDay[] = [];
-        //     // if (!expense.data) return listExpense;
-        //     Object.keys(expense?.data)?.map((yearM: string) => {
-        //         const parseYearM = Number(yearM);
-        //         if ((parseYearM >= yearBegin && parseYearM <= yearEnd) === false) return
-        //         const yearList = expense.data[parseYearM];
-        //         if (!yearList) return;
-        //         Object.keys(yearList).map((monthM: string) => {
-        //             const parseMonthM = Number(monthM)
-        //             if ((parseMonthM >= monthBegin && parseYearM <= yearEnd) === false) return
-
-        //         })
-
-
-        //         // if (option && condition(yearM, option.year)[option.type]()) return;
-        //         // const parseYearM = Number(yearM);
-        //         // const yearList = expense.data[parseYearM];
-        //         // if (!yearList) return;
-        //         // Object.keys(yearList).map((monthM: string) => {
-        //         //     if (
-        //         //         option &&
-        //         //         condition(monthM, option.month)[option.type]() &&
-        //         //         Number(yearM) === Number(option.year)
-        //         //     )
-        //         //         return;
-        //         //     const parseMonthM = Number(monthM);
-        //         //     const monthList = yearList[parseMonthM];
-        //         //     if (!monthList) return;
-        //         //     Object.keys(monthList).map((dateM: string) => {
-        //         //         if (
-        //         //             option &&
-        //         //             condition(dateM, option.date)[option.type](true) &&
-        //         //             Number(monthM) === Number(option.month) &&
-        //         //             Number(yearM) === Number(option.year)
-        //         //         )
-        //         //             return;
-        //         //         const parseDateM = Number(dateM);
-        //         //         if (!monthList[parseDateM]) return;
-        //         //         listExpense.push({ ...copy(monthList[parseDateM]), date: parseDateM, month: parseMonthM, year: parseYearM });
-        //         //         return listExpense;
-        //         //     });
-        //         // });
-        //     });
-        //     return listExpense;
-        // },
     };
 }
 

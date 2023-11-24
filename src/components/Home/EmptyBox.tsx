@@ -8,7 +8,7 @@ function EmptyBox({ dependency }: { dependency?: unknown }) {
     setBgEmptyBox("#" + Math.floor(Math.random() * 16777215).toString(16));
   }, [dependency]);
   return (
-    <div className="grid flex-1 place-content-center bg-cyan-50/20">
+    <div className="grid h-full flex-1 place-content-center bg-cyan-50/20">
       <div className="relative h-72 w-72 p-16">
         <div
           className="absolute left-0 top-0 -z-1 h-full w-full rounded-full opacity-5 blur-3xl"

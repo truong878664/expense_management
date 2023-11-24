@@ -27,9 +27,9 @@ function RecentTransaction({
   return (
     <section className="mt-5">
       <div className="flex justify-between text-sm font-bold ">
-        <span>Giao dịch gầy đây</span>
+        <span>Giao dịch gần đây</span>
         <Link
-          href={"/" + useQueryParams().paramsString()}
+          href={"/" + useQueryParams().paramsString({ date: "" })}
           className="text-c-green"
         >
           Xem tất cả
@@ -42,7 +42,8 @@ function RecentTransaction({
             const group = findExpenseGroup(expense.group);
             return (
               <ItemExpense
-                key={index}
+                id={expense.id}
+                key={expense.id}
                 type={group?.type || "expense"}
                 kind={group?.title || ""}
                 describe={expense.describe || ""}
@@ -54,7 +55,7 @@ function RecentTransaction({
           })
         ) : (
           <span className="w-full text-center text-slate-600">
-            Không có giao dịch
+            Không có giao dịch trong ngày
           </span>
         )}
       </ul>

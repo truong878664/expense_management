@@ -16,7 +16,6 @@ import {
   faCaretDown,
   faCircleXmark,
   faStroopwafel,
-  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -28,6 +27,7 @@ import classNames from "classnames";
 import shortHandString from "@/function/shortHandString";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import useQueryParams from "@/hooks/useQueryParams";
+import HeaderExpense from "./HeaderExpense";
 
 function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
   const dispatch = useDispatch();
@@ -68,6 +68,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
     expense.money !== moneyExpense &&
       (() => {
         dispatch(extend({ money: moneyExpense }));
+        setDisableSubmit(!(expense.group && validMoney));
         console.log("Dispatch money: ", moneyExpense);
       })();
   };
@@ -83,25 +84,26 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
 
   useEffect(() => {
     setDisableSubmit(!(expense.group && validMoney));
-  }, [expense.group, money]);
+  }, [expense.group]);
 
   useEffect(dispatchMoney, [moneyDebounce]);
 
   return (
     <>
-      <div className="sticky top-0 mb-2 flex justify-between border-b px-4 py-2 font-bold capitalize">
-        <button onClick={handleDismiss}>Hủy</button>
-        <span>Thêm giao dịch</span>
-        <button
-          disabled={disableSubmit}
-          className="disabled:pointer-events-none disabled:opacity-50"
-          onClick={() => {
+      <HeaderExpense
+        title={"Thêm giao dịch"}
+        handleLeft={{
+          callback: handleDismiss,
+          title: "Hủy",
+        }}
+        handleRight={{
+          callback: () => {
             !disableSubmit && onSubmit();
-          }}
-        >
-          Lưu
-        </button>
-      </div>
+          },
+          title: "Lưu",
+          disabled: disableSubmit,
+        }}
+      />
       <div className="mt-6 flex flex-col gap-2 bg-gray-200/70 p-2">
         <div className="flex gap-4">
           <div className="grid aspect-square w-10 place-content-center">
@@ -116,7 +118,7 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
                 type="text"
                 value={money}
                 className={classNames(
-                  "w-full bg-transparent text-2xl  focus:outline-none",
+                  "w-full bg-transparent text-2xl focus:outline-none",
                   { "text-gray-500": !validMoney },
                 )}
                 onChange={onchange}
@@ -136,10 +138,9 @@ function PageAddExpense({ handleDismiss }: { handleDismiss: () => void }) {
         </div>
         <div className="flex gap-4">
           <div
-            className="grid aspect-square w-10 place-content-center rounded-full bg-rose-300/20 text-2xl text-rose-400"
+            className="grid aspect-square w-10 place-content-center rounded-full bg-rose-400 text-2xl text-white"
             style={{
-              backgroundColor: groupSelector?.color + "3F",
-              color: groupSelector?.color,
+              backgroundColor: groupSelector?.color,
             }}
           >
             <FontAwesomeIcon

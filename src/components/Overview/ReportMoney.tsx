@@ -71,8 +71,10 @@ function ReportMoney({ expenseStore }: { expenseStore: UseExpenseSelector }) {
     (Math.abs(sumReport - sumReportPast) / sumReportPast) * 100,
   );
   const maxChart = Math.round(maxExpenseTotal / 1000);
-  const valueShowMaxChart =
-    maxChart > 1000 ? Math.ceil(maxChart / 1000) : Math.ceil(maxChart);
+  const isMillion = maxExpenseTotal > 10 ** 6;
+  const valueShowMaxChart = isMillion
+    ? Math.ceil(maxChart / 1000)
+    : Math.ceil(maxChart);
 
   return (
     <section className="mt-5">
@@ -131,7 +133,7 @@ function ReportMoney({ expenseStore }: { expenseStore: UseExpenseSelector }) {
                   }
                   className="group flex gap-2 font-bold data-[fluctuation='decrement']:text-c-green data-[fluctuation='increment']:text-red-600"
                 >
-                  <span className="grid h-5 w-5 place-content-center rounded-full bg-slate-200 group-data-[fluctuation='decrement']:rotate-0 group-data-[fluctuation='increment']:rotate-180">
+                  <span className="grid h-5 w-5 place-content-center rounded-full bg-slate-200 transition-transform duration-500 group-data-[fluctuation='decrement']:rotate-0 group-data-[fluctuation='increment']:rotate-180">
                     <FontAwesomeIcon icon={faArrowDown} />
                   </span>
                   <span>
@@ -151,7 +153,7 @@ function ReportMoney({ expenseStore }: { expenseStore: UseExpenseSelector }) {
                 <button
                   style={{
                     height:
-                      (maxChart > 1000
+                      (isMillion
                         ? (sumReportPast / 1000000 / valueShowMaxChart) * 100
                         : (sumReportPast / 1000 / valueShowMaxChart) * 100) +
                       "%",
@@ -161,18 +163,16 @@ function ReportMoney({ expenseStore }: { expenseStore: UseExpenseSelector }) {
                 <button
                   style={{
                     height:
-                      (maxChart > 1000
+                      (isMillion
                         ? (sumReport / 1000000 / valueShowMaxChart) * 100
                         : (sumReport / 1000 / valueShowMaxChart) * 100) + "%",
                   }}
                   className="active w-10 rounded-t-md bg-red-400 opacity-50 transition-all duration-300 [&.active]:opacity-100"
-                >
-                  {/* {sumReport / 1000 + "|" + valueShowMaxChart} */}
-                </button>
+                ></button>
                 <div className="absolute left-full top-0 flex h-full flex-col items-center justify-between text-xs">
                   <span>
                     {valueShowMaxChart}
-                    {maxChart > 1000 ? "M" : "k"}
+                    {isMillion ? "M" : "k"}
                   </span>
                   <span className="font-thin">-</span>
                   <span>-</span>
@@ -201,7 +201,8 @@ function ReportMoney({ expenseStore }: { expenseStore: UseExpenseSelector }) {
                     const group = findExpenseGroup(expense.group);
                     return (
                       <ItemExpense
-                        key={index}
+                        id={expense.id}
+                        key={expense.id}
                         type={group?.type || "expense"}
                         kind={group?.title || ""}
                         describe={Money.format(expense.money).toString()}

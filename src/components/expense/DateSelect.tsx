@@ -57,9 +57,7 @@ function DateSelect({ handleRemove }: DateSelect) {
         <Button data-minus-date="0" onClick={onDispatchDate}>
           Hôm nay
         </Button>
-        <Button data-minus-date="-3" onClick={onOptionDate.show}>
-          Tùy chỉnh
-        </Button>
+        <Button onClick={onOptionDate.show}>Tùy chỉnh</Button>
       </WrapperSelect>
       {optionDateComponent}
     </>

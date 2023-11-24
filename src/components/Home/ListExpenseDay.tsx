@@ -13,6 +13,7 @@ type ListExpenseDay = {
   year: number;
   day?: string;
   totalDay?: number;
+  activeDate?: string;
   expenseDay?: ExpenseList[];
 };
 function ListExpenseDay({
@@ -22,9 +23,14 @@ function ListExpenseDay({
   day,
   totalDay,
   expenseDay,
+  activeDate,
 }: ListExpenseDay) {
+  const isEmptyAndFuture = activeDate === "future" && expenseDay?.length === 0;
+  if (isEmptyAndFuture) return null;
   return (
-    <div className={classNames({ "flex-1": !expenseDay }, "flex flex-col")}>
+    <div
+      className={classNames({ "flex-1": !expenseDay?.length }, "flex flex-col")}
+    >
       <HeaderListExpense
         date={date}
         month={month}
@@ -32,16 +38,17 @@ function ListExpenseDay({
         totalDay={totalDay}
         day={day}
       />
-      {expenseDay ? (
+      {expenseDay?.length ? (
         <ul className="flex flex-col gap-5 bg-gray-100 px-2 py-4">
           {expenseDay.map((item, index: number) => {
             const group = findExpenseGroup(item.group);
             return (
               <ItemExpense
+                id={item.id}
                 key={index}
                 type={group?.type || "expense"}
                 kind={group?.title || "Không có tiêu đề"}
-                describe={shortHandString(item.describe)}
+                describe={item?.describe || ""}
                 value={item.money}
                 icon={group?.iconFa?.icon || faPaw}
                 color={(group?.color as `#${string}`) || "#F875AA"}

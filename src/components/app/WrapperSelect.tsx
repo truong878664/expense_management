@@ -37,13 +37,10 @@ function WrapperSelect({
     );
   }, []);
   return (
-    <div
-      // id="date-select-wrapper"
-      className="fixed left-0 top-0 z-11 grid h-full w-full items-end overflow-hidden rounded-t-3xl backdrop-blur-[1px]"
-    >
+    <div className="fixed left-0 top-0 z-11 grid h-full w-full items-end overflow-hidden bg-black/10 px-1">
       <div className="absolute-screen" onClick={onRemove}></div>
       <div
-        className="z-1 mb-6 flex w-full shrink flex-col items-center justify-center gap-2 px-1"
+        className="z-1 mb-6 flex w-full shrink flex-col items-center justify-center px-1"
         ref={WrapperSelectRef}
       >
         {children}

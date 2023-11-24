@@ -14,7 +14,7 @@ const Button = React.forwardRef(
         {...rest}
         ref={ref}
         className={classNames(
-          "w-full max-w-md rounded-2xl bg-gray-200 py-4 text-center font-bold text-sky-600 shadow-md shadow-gray-600/20 backdrop-blur-sm last:mt-4 active:bg-gray-100 [&.disable]:text-gray-500 [&.disable]:opacity-90 ",
+          "bg-gray-20 w-full max-w-md border-t bg-[#efeff1] py-4 text-center font-bold text-sky-600 shadow-md shadow-gray-600/20 backdrop-blur-sm first:rounded-t-2xl first:border-t-0 last:mt-4 last:rounded-2xl active:bg-gray-100  [&.disable]:text-gray-500 [&.disable]:opacity-90 [&:nth-last-child(2)]:rounded-b-2xl [&:nth-last-child(2)]:border-b",
           className,
           { disable },
         )}

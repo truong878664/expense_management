@@ -23,7 +23,7 @@ export type ExpenseDay = {
     day: string;
 };
 export type ExpenseList = {
-    id: string | number | null;
+    id: string | number;
     group: number | string;
     describe?: string;
     money: number;
@@ -31,7 +31,7 @@ export type ExpenseList = {
     month: number;
     year: number;
     day: string;
-    timestamp: number
+    timestamp: number;
 };
 export type Expense = {
     initBalance: number;
@@ -42,19 +42,35 @@ export type Expense = {
     finalBalanceEachYear: { [year: number]: number };
     data: ExpenseData;
 };
-export type ExpensePayload = ExpenseList & {
+export type ExpensePayload = ExpenseList;
+export type DeleteExpensePayload = {
     date: number;
     month: number;
     year: number;
-    day: string;
-    timestamp: number;
+    id: number | string;
 };
+
+const sumExpenseDay = (data: ExpenseList[]): number => {
+    const totalMoney = Array.from(data).reduce(
+        (sum: number, expense: ExpenseList) => {
+            const group = findExpenseGroup(expense.group);
+            if (group?.type === "income") {
+                return sum + expense.money;
+            } else {
+                return sum - expense.money;
+            }
+        },
+        0,
+    );
+    return totalMoney;
+};
+
 const dataExpense = new DataExpense();
 const initialState: Expense = dataExpense.get;
 const actions = {
-    add(state: Expense, action: PayloadAction<ExpensePayload>) {
+    add(state: Expense, action: PayloadAction<ExpensePayload>): void {
         const { ...expenseItem } = action.payload;
-        const { date, month, year, day } = expenseItem
+        const { date, month, year, day } = expenseItem;
         const data = (state.data ||= {});
         const yearData = (data[year] ||= {});
         const monthData = (yearData[month] ||= {});
@@ -67,31 +83,35 @@ const actions = {
             day,
         });
 
-        dayData.expenseList = [
-            ...copy(dayData.expenseList),
-            expenseItem,
-        ];
+        dayData.expenseList = [...copy(dayData.expenseList), expenseItem];
 
-        const totalMoney = Array.from(dayData.expenseList).reduce(
-            (sum: number, expense: ExpenseList) => {
-                const group = findExpenseGroup(expense.group)
-                if (group?.type === "income") {
-                    return sum + expense.money
-                } else {
-                    return sum - expense.money
-                }
-            },
-            0,
-        );
-
-        dayData.total = totalMoney
+        dayData.total = sumExpenseDay(dayData.expenseList);
 
         if (state.data) {
-            const listExpense = toExpenseDayList(state)
-            const total = sum(listExpense, state.initBalance)
-            state.finalBalance = total
+            const listExpense = toExpenseDayList(state);
+            const total = sum(listExpense, state.initBalance);
+            state.finalBalance = total;
         }
-        dataExpense.save((JSON.stringify(state)))
+        dataExpense.save(JSON.stringify(state));
+    },
+    deleteExpense(
+        state: Expense,
+        action: PayloadAction<DeleteExpensePayload>,
+    ): void {
+        const { year, date, month, id } = action.payload;
+        const dayData = state.data[year][month][date];
+        const data = dayData.expenseList;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].id === id) {
+                data.splice(i, 1);
+                break;
+            }
+        }
+        dayData.total = sumExpenseDay(dayData.expenseList);
+        const listExpense = toExpenseDayList(state);
+        const total = sum(listExpense, state.initBalance);
+        state.finalBalance = total;
+        dataExpense.save(JSON.stringify(state));
     },
 };
 
@@ -101,6 +121,5 @@ const expenseSlice = createSlice({
     reducers: actions,
 });
 
-
-export const { add } = expenseSlice.actions;
+export const { add, deleteExpense } = expenseSlice.actions;
 export default expenseSlice.reducer;

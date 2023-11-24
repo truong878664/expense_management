@@ -31,7 +31,7 @@ function Footer() {
   console.log();
 
   return (
-    <footer className="z-10">
+    <footer className="z-10 bg-white">
       <div className="w-full pb-4">
         <ul className="grid w-full grid-cols-5 whitespace-nowrap border-t">
           <ItemFooter
@@ -73,7 +73,8 @@ function Footer() {
           />
           <ItemFooter
             active={pathname === "/account"}
-            href={"/account" + paramsString}
+            // href={"/account" + paramsString}
+            href={"/detail-expense" + paramsString}
             icon={faUser}
             title="Tài khoản"
           />

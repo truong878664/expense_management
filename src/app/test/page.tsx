@@ -8,6 +8,7 @@ import {
 } from "./counterSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DataExpense from "@/function/DataExpense";
+import Link from "next/link";
 
 function PageTest() {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ function PageTest() {
         <button onClick={() => dispatch(incrementByAmount({ value: 10 }))}>
           click 10
         </button>
+        <Link href="/detail-expense">goto detail page</Link>
       </div>
     </div>
   );

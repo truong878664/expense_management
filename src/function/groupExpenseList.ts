@@ -120,7 +120,8 @@ export const expenseList: {
 
     ];
 
-export const findExpenseGroup = (id: string | number) => {
+export const findExpenseGroup = (id: string | number | undefined) => {
+    if (!id) return
     const expenseFind = expenseList.find(item => item.id === id)
     if (expenseFind) {
         const iconFind = iconList.find(icon => icon.id === expenseFind.icon)
